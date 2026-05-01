@@ -1,0 +1,949 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nexus Solutions | Roadmap Tecnológico</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* --- Variables Corporativas --- */
+        :root {
+            --primary-blue: #0A2540;
+            --secondary-blue: #0052CC;
+            --accent-cyan: #00B8D9;
+            --bg-light: #F4F5F7;
+            --bg-body: #FAFBFC;
+            --text-main: #172B4D;
+            --text-muted: #5E6C84;
+            --border-color: #DFE1E6;
+            --white: #FFFFFF;
+            --hw-color: #0052CC;
+            /* Hardware - Azul */
+            --sw-color: #6554C0;
+            /* Software - Púrpura */
+            --net-color: #00875A;
+            /* Redes - Verde */
+            --nexus-gradient: linear-gradient(135deg, #0052CC 0%, #00B8D9 100%);
+        }
+
+        /* --- VARIABLES PARA MODO OSCURO (CORREGIDO) --- */
+        body.dark-mode {
+            /* Fondo y Superficies */
+            --bg-body: #050505;
+            --bg-light: #121212;
+            --white: #1A1A1A;
+            --border-color: #333333;
+
+            /* Textos Principalmente */
+            --primary-blue: #E6EFFF;
+            /* Ahora los títulos serán blanco-azulados */
+            --text-main: #F4F5F7;
+            /* Texto de párrafos en blanco grisáceo */
+            --text-muted: #B3D4FF;
+            /* Texto secundario en azul claro */
+            --secondary-blue: #4791FF;
+            /* Un azul más brillante para que resalte */
+
+            /* Fondo animado oscuro */
+            background: linear-gradient(-45deg, #050505, #0A192F, #121212, #050505);
+        }
+
+        /* --- AJUSTES EXTRA DE LEGIBILIDAD PARA MODO OSCURO --- */
+
+        /* Asegura que los enlaces del navbar se vean bien */
+        body.dark-mode nav {
+            background: rgba(10, 25, 64, 0.95);
+            border-bottom: 1px solid #333;
+        }
+
+        body.dark-mode .nav-links a {
+            color: #B3D4FF;
+        }
+
+        /* Mejora el contraste de las tarjetas y contenedores */
+        body.dark-mode .phil-card,
+        body.dark-mode .academic-dashboard,
+        body.dark-mode .member-card,
+        body.dark-mode .doc-card,
+        body.dark-mode .sidebar,
+        body.dark-mode .term-card,
+        body.dark-mode .info-box {
+            background: #1A1A1A;
+            border-color: #333;
+            color: #F4F5F7;
+        }
+
+        /* Ajuste para tablas en modo oscuro */
+        body.dark-mode table {
+            border-color: #333;
+        }
+
+        body.dark-mode th {
+            background: #252525;
+            color: var(--secondary-blue);
+        }
+
+        body.dark-mode td {
+            border-bottom-color: #333;
+            color: #B3D4FF;
+        }
+
+        /* Ajuste para el Sidebar de desarrollo.html */
+        body.dark-mode .sidebar a {
+            color: #B3D4FF;
+        }
+
+        body.dark-mode .sidebar a:hover,
+        body.dark-mode .sidebar a.active {
+            background: #252525;
+            color: var(--secondary-blue);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            color: var(--text-main);
+
+            /* --- Nuevo fondo blanco/gris con degradado animado --- */
+            background: linear-gradient(-45deg, #ffffff, #F4F5F7, #E3E5E8, #ffffff);
+            background-size: 400% 400%;
+            animation: moveLightGradient 15s ease infinite;
+
+            line-height: 1.6;
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        /* Animación fluida del fondo */
+        @keyframes moveLightGradient {
+            0% {
+                background-position: 0% 50%;
+            }
+
+            50% {
+                background-position: 100% 50%;
+            }
+
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+
+        body.modal-open {
+            overflow: hidden;
+        }
+
+        /* Ajustes para el Logo */
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            /* Espacio entre el logo y el texto */
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--primary-blue);
+            text-decoration: none;
+            letter-spacing: -0.5px;
+        }
+
+        .logo span {
+            color: var(--secondary-blue);
+        }
+
+        .logo-img {
+            height: 36px;
+            /* Altura máxima del logo para que no deforme el navbar */
+            width: auto;
+            object-fit: contain;
+        }
+
+        /* --- Navbar --- */
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            z-index: 1000;
+            padding: 15px 0;
+        }
+
+        .nav-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary-blue);
+            text-decoration: none;
+        }
+
+        .logo span {
+            color: var(--secondary-blue);
+        }
+
+        .nav-links {
+            list-style: none;
+            display: flex;
+            gap: 30px;
+            align-items: center;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--text-muted);
+            font-weight: 600;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+        }
+
+        .nav-links a:hover,
+        .nav-links a.active {
+            color: var(--secondary-blue);
+        }
+
+        /* --- Header --- */
+        .page-header {
+            background: linear-gradient(135deg, var(--primary-blue) 0%, #153B61 100%);
+            color: var(--white);
+            padding: 140px 0 60px;
+            text-align: center;
+        }
+
+        .page-header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .page-header p {
+            color: #B3D4FF;
+            font-size: 1.1rem;
+        }
+
+        /* --- Timeline Engine --- */
+        .roadmap-container {
+            width: 100%;
+            overflow-x: auto;
+            padding: 60px 0 100px;
+            cursor: grab;
+            scrollbar-width: thin;
+            scrollbar-color: var(--secondary-blue) transparent;
+        }
+
+        .roadmap-container::-webkit-scrollbar {
+            height: 6px;
+        }
+
+        .roadmap-container::-webkit-scrollbar-thumb {
+            background: var(--secondary-blue);
+            border-radius: 10px;
+        }
+
+        .roadmap-grid {
+            display: grid;
+            grid-template-columns: 200px 1fr;
+            gap: 40px;
+            width: max-content;
+            padding: 0 100px;
+        }
+
+        .category-label {
+            display: flex;
+            align-items: center;
+            font-weight: 700;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            border-left: 4px solid var(--secondary-blue);
+            padding-left: 20px;
+            height: 140px;
+        }
+
+        .label-hw {
+            border-color: var(--hw-color);
+        }
+
+        .label-sw {
+            border-color: var(--sw-color);
+        }
+
+        .label-net {
+            border-color: var(--net-color);
+        }
+
+        .roadmap-row {
+            display: flex;
+            gap: 80px;
+            align-items: center;
+            position: relative;
+        }
+
+        .roadmap-row::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: #DFE1E6;
+            z-index: 1;
+        }
+
+        /* Nodos del Roadmap */
+        .node {
+            position: relative;
+            z-index: 2;
+            width: 220px;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        .node:hover {
+            transform: translateY(-5px);
+        }
+
+        .node-year {
+            background: var(--white);
+            border: 2px solid var(--border-color);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 800;
+            color: var(--text-muted);
+            display: inline-block;
+            margin-bottom: 15px;
+            transition: all 0.3s;
+        }
+
+        .node-card {
+            background: var(--white);
+            border: 1px solid var(--border-color);
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            border-top: 4px solid var(--secondary-blue);
+        }
+
+        .node-card h4 {
+            font-size: 0.95rem;
+            color: var(--primary-blue);
+            line-height: 1.3;
+        }
+
+        /* Colores dinámicos por categoría */
+        .row-hw .node-card {
+            border-top-color: var(--hw-color);
+        }
+
+        .row-sw .node-card {
+            border-top-color: var(--sw-color);
+        }
+
+        .row-net .node-card {
+            border-top-color: var(--net-color);
+        }
+
+        .row-hw .node:hover .node-year {
+            border-color: var(--hw-color);
+            color: var(--hw-color);
+        }
+
+        .row-sw .node:hover .node-year {
+            border-color: var(--sw-color);
+            color: var(--sw-color);
+        }
+
+        .row-net .node:hover .node-year {
+            border-color: var(--net-color);
+            color: var(--net-color);
+        }
+
+        /* Hito Convergencia Nexus 2026 */
+        .node-nexus {
+            width: 300px;
+        }
+
+        .node-nexus .node-card {
+            background: var(--primary-blue);
+            border-top: none;
+            color: var(--white);
+            box-shadow: 0 10px 30px rgba(10, 37, 64, 0.3);
+            background: var(--nexus-gradient);
+        }
+
+        .node-nexus h4 {
+            color: var(--white);
+            font-weight: 700;
+            font-size: 1.1rem;
+        }
+
+        .node-nexus .node-year {
+            background: var(--secondary-blue);
+            color: var(--white);
+            border-color: transparent;
+        }
+
+        /* --- Modales --- */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(9, 30, 66, 0.8);
+            backdrop-filter: blur(8px);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+            padding: 20px;
+        }
+
+        .modal-card {
+            background: var(--white);
+            border-radius: 12px;
+            width: 100%;
+            max-width: 700px;
+            max-height: 90vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+            animation: modalSlide 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        @keyframes modalSlide {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .modal-header {
+            padding: 40px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .modal-header .category {
+            text-transform: uppercase;
+            font-size: 0.8rem;
+            font-weight: 800;
+            color: var(--secondary-blue);
+            letter-spacing: 2px;
+            margin-bottom: 10px;
+            display: block;
+        }
+
+        .modal-header h2 {
+            font-size: 1.8rem;
+            color: var(--primary-blue);
+        }
+
+        .modal-body {
+            padding: 40px;
+            overflow-y: auto;
+        }
+
+        .info-section {
+            margin-bottom: 30px;
+        }
+
+        .info-section h3 {
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            margin-bottom: 10px;
+            border-left: 3px solid var(--secondary-blue);
+            padding-left: 10px;
+        }
+
+        .info-section p {
+            font-size: 1.05rem;
+            color: var(--text-main);
+            text-align: justify;
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: var(--bg-light);
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--text-muted);
+        }
+
+        .close-btn:hover {
+            background: var(--border-color);
+            color: var(--primary-blue);
+        }
+
+        footer {
+            background-color: var(--primary-blue);
+            color: #8C9BAB;
+            padding: 40px 0;
+            text-align: center;
+            border-top: 5px solid var(--secondary-blue);
+        }
+
+        /* --- Sección Reflexión Final --- */
+        .footer-reflection {
+            margin-top: 5rem;
+            padding: 4rem 20px 5rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2.5rem;
+            position: relative;
+            z-index: 10;
+        }
+
+        .btn-drive {
+            display: inline-block;
+            padding: 1rem 2.5rem;
+            background: var(--nexus-gradient);
+            color: #fff;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 0.95rem;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            border-radius: 50px;
+            box-shadow: 0 8px 25px rgba(0, 82, 204, 0.35);
+            transition: all 0.3s ease;
+            border: none;
+        }
+
+        .btn-drive:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 14px 35px rgba(0, 82, 204, 0.5);
+            filter: brightness(1.1);
+        }
+
+        .reflexion-content {
+            max-width: 820px;
+            width: 100%;
+            background: var(--white);
+            border: 1px solid var(--border-color);
+            border-top: 5px solid var(--secondary-blue);
+            border-radius: 12px;
+            padding: 3rem;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.06);
+        }
+
+        .reflexion-content h3 {
+            font-size: 1.6rem;
+            color: var(--primary-blue);
+            margin-bottom: 1.2rem;
+            font-weight: 700;
+        }
+
+        .reflexion-content p {
+            font-size: 1.05rem;
+            line-height: 1.8;
+            color: var(--text-main);
+            text-align: justify;
+        }
+
+        /* Dark mode para la reflexión */
+        body.dark-mode .reflexion-content {
+            background: #1A1A1A;
+            border-color: #333;
+            border-top-color: var(--secondary-blue);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+        }
+
+        body.dark-mode .reflexion-content h3 {
+            color: var(--text-muted);
+        }
+
+        body.dark-mode .reflexion-content p {
+            color: #F4F5F7;
+        }
+
+        @media (max-width: 768px) {
+            .footer-reflection {
+                padding: 2.5rem 20px 3rem;
+            }
+
+            .reflexion-content {
+                padding: 1.8rem;
+            }
+
+            .reflexion-content h3 {
+                font-size: 1.3rem;
+            }
+
+            .reflexion-content p {
+                font-size: 0.95rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <nav>
+        <div class="nav-container">
+            <a href="index.html" class="logo">
+                <img src="logo.png" alt="Nexus Logo" class="logo-img">
+                <div>Nexus<span>Solutions</span></div>
+            </a>
+            <ul class="nav-links">
+                <li><a href="index.html">Inicio</a></li>
+                <li><a href="glosario.html">Glosario TIC</a></li>
+                <li><a href="desarrollo.html">Desarrollo TP</a></li>
+                <li><a href="infografia.html" class="active">Infografía</a></li>
+                <li>
+                    <button id="dark-mode-toggle"
+                        style="background:none; border:none; cursor:pointer; font-size:1.2rem; display:flex; align-items:center;">
+                        <span id="theme-icon">🌙</span>
+                    </button>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <header class="page-header">
+        <div class="container">
+            <h1>Roadmap de Evolución Tecnológica</h1>
+            <p>Análisis técnico de hitos históricos y reducción de entropía sistémica (1971 - 2026)</p>
+        </div>
+    </header>
+
+    <main class="roadmap-container" id="roadmapWrapper">
+        <div class="roadmap-grid">
+
+            <div class="category-label label-hw">Infraestructura Hardware</div>
+            <div class="roadmap-row row-hw" id="row-hardware"></div>
+
+            <div class="category-label label-sw">Arquitectura Software</div>
+            <div class="roadmap-row row-sw" id="row-software"></div>
+
+            <div class="category-label label-net">Telecomunicaciones</div>
+            <div class="roadmap-row row-net" id="row-networks"></div>
+
+        </div>
+    </main>
+
+    <div class="modal-overlay" id="modalOverlay">
+        <div class="modal-card">
+            <button class="close-btn" id="closeModal">&times;</button>
+            <div class="modal-header">
+                <span class="category" id="modalCategory">Categoría</span>
+                <h2 id="modalTitle">Título del Hito</h2>
+            </div>
+            <div class="modal-body">
+                <div class="info-section">
+                    <h3>Limitación Técnica Previa</h3>
+                    <p id="modalLimit">Contenido...</p>
+                </div>
+                <div class="info-section">
+                    <h3>Salto Cualitativo</h3>
+                    <p id="modalJump">Contenido...</p>
+                </div>
+                <div class="info-section">
+                    <h3>Relación con la Entropía</h3>
+                    <p id="modalEntropy">Contenido...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Reflexión Final: ubicada antes del footer, dentro del flujo principal -->
+    <div class="footer-reflection">
+
+        <div class="enlace-drive">
+            <a href="https://drive.google.com/file/d/1--DLHCYfnuzySiK0TBJ_T--LrxjrDtF2/view?usp=sharing" target="_blank"
+                class="btn-drive">📄 Ver Informe Técnico (Google Drive)</a>
+        </div>
+
+        <div class="reflexion-content">
+            <h3>Reflexión Final</h3>
+            <p>
+                La supervivencia de Nexus Solutions ante las constantes tensiones del mercado actual no es producto del
+                azar, sino de nuestra capacidad sistémica para importar negentropía. La evolución histórica, desde la
+                computación analógica hasta la actual infraestructura Cloud, nos demuestra que la información tiende
+                naturalmente a la entropía, es decir, al caos y al desorden operativo. Como consultora especializada,
+                contrarrestamos esta degradación inyectando innovación y estructuración lógica en los procesos de
+                negocio. Nuestras arquitecturas, como el sistema logístico SIPLOG y los motores de inferencia SBC,
+                actúan como el mecanismo perfecto de adaptación: absorben la entropía del entorno y transforman datos
+                crudos en decisiones estratégicas de alto valor. En definitiva, la digitalización y la inyección
+                permanente de orden tecnológico son factores decisivos; sin ellos, cualquier organización sucumbiría
+                irremediablemente ante la fricción y la obsolescencia que impone la industria moderna.
+            </p>
+        </div>
+
+    </div>
+
+    <footer>
+        <p>&copy; 2026 Nexus Solutions. Reporte de Auditoría Histórica.</p>
+    </footer>
+
+    <script>
+        const timelineData = [
+            {
+                year: "1971-80s",
+                hardware: {
+                    name: "El Microprocesador (Intel 4004)",
+                    limit: "Dependencia de ENIACs y mainframes de válvulas de vacío. Ocupaban salas enteras con tasas de fallo masivas por sobrecalentamiento.",
+                    jump: "La integración VLSI permitió colocar miles de transistores en un único chip de silicio, creando la CPU universal programable.",
+                    entropy: "Reducción del ruido térmico. Al acortar distancias eléctricas a nivel microscópico, se estabilizó el flujo de datos determinista."
+                },
+                software: {
+                    name: "UNIX y Bases de Datos Relacionales",
+                    limit: "Código en ensamblador acoplado al hardware. Datos en archivos planos con redundancia masiva y anomalías imposibles de auditar.",
+                    jump: "Abstracción de hardware mediante lenguaje C. El modelo relacional de Codd revolucionó el almacenamiento estructurado.",
+                    entropy: "Introducción de propiedades ACID, eliminando el caos de la redundancia y garantizando integridad referencial absoluta."
+                },
+                networks: {
+                    name: "Protocolo TCP/IP",
+                    limit: "Uso de conmutación de circuitos (líneas dedicadas); si un nodo central caía, la comunicación era imposible.",
+                    jump: "La conmutación de paquetes dividió datos en bloques enrutables dinámicamente compartiendo infraestructura física.",
+                    entropy: "TCP introdujo sumas de comprobación (checksums) para regenerar señales digitales eliminando el desorden de canales ruidosos."
+                }
+            },
+            {
+                year: "1990s",
+                hardware: {
+                    name: "Arquitectura x86 y VGA",
+                    limit: "Dependencia de terminales 'tontas'. Pantallas monocromáticas de baja resolución limitadas a texto plano.",
+                    jump: "Democratización de la PC local. Los procesadores gráficos liberaron a la CPU del costoso renderizado visual.",
+                    entropy: "Reducción del ruido cognitivo; estandarización de periféricos permitiendo interacciones de usuario predecibles."
+                },
+                software: {
+                    name: "HTTP / HTML",
+                    limit: "Internet como conjunto de redes académicas aisladas con interfaces de línea de comandos incompatibles.",
+                    jump: "Transferencia de documentos hipervinculados ricos en multimedia de forma transparente para el usuario final.",
+                    entropy: "El hipervínculo funcionó como reductor de entropía semántica, tejiendo una red lógica sobre silos de información caótica."
+                },
+                networks: {
+                    name: "Internet Global (Banda Ancha)",
+                    limit: "Módems dial-up limitados a 56 kbps por la banda de voz analógica de la telefonía tradicional.",
+                    jump: "ADSL y fibra óptica permitieron separar voz y datos, multiplicando velocidades a Megabits estables.",
+                    entropy: "El protocolo BGP estructuró las tablas de enrutamiento mundial, previniendo bucles infinitos de datos en el tráfico global."
+                }
+            },
+            {
+                year: "2000s",
+                hardware: {
+                    name: "Datacenters Hiperescalables",
+                    limit: "Arquitectura bare-metal con subutilización masiva (procesadores inactivos el 85% del tiempo).",
+                    jump: "Consolidación de clusters masivos y servidores Blade con almacenamiento distribuido SAN/NAS.",
+                    entropy: "Optimización termodinámica centralizada, aislando servidores del desorden físico mediante redundancia estructurada."
+                },
+                software: {
+                    name: "Hipervisores e IaaS",
+                    limit: "El despliegue de aplicaciones requería semanas de compra e instalación física de hardware y cableado.",
+                    jump: "Emulación de hardware por software, permitiendo particionar servidores físicos en máquinas virtuales en minutos.",
+                    entropy: "Aislamiento absoluto de procesos; un fallo crítico virtualizado ya no propaga el caos hacia la infraestructura física."
+                },
+                networks: {
+                    name: "Fibra Óptica DWDM",
+                    limit: "La interferencia electromagnética (EMI) del cobre limitaba el ancho de banda transoceánico necesario.",
+                    jump: "Multiplexación por división de longitud de onda enviando múltiples colores de luz sobre el mismo hilo de vidrio.",
+                    entropy: "Inmunidad total a interferencias externas, garantizando que Terabits crucen continentes sin pérdida de integridad."
+                }
+            },
+            {
+                year: "2010s",
+                hardware: {
+                    name: "Edge Computing y ARM",
+                    limit: "Latencias inaceptables para aplicaciones móviles modernas al depender exclusivamente de datacenters centrales.",
+                    jump: "Procesadores de bajo consumo ejecutando cálculos complejos localmente en el borde (Edge) de la red.",
+                    entropy: "Descentralización inteligente; filtrado de 'ruido' en el origen evitando saturar los nodos centrales de la red."
+                },
+                software: {
+                    name: "Contenedores (Docker)",
+                    limit: "Infierno de dependencias en monolitos frágiles. Una falla en un módulo derribaba todo el sistema.",
+                    jump: "Empaquetamiento de código con su entorno exacto, permitiendo despliegues de microservicios en segundos.",
+                    entropy: "Eliminación del 'Configuration Drift'. Infraestructura inmutable que garantiza un comportamiento 100% determinista."
+                },
+                networks: {
+                    name: "4G LTE y SDN",
+                    limit: "Routers con plano de control acoplado rígidamente al hardware, requiriendo configuración manual puerto a puerto.",
+                    jump: "Separación de la lógica de red del hardware físico permitiendo orquestar el tráfico mediante APIs dinámicas.",
+                    entropy: "Enrutamiento adaptativo en tiempo real; los algoritmos desvían tráfico ante caídas, manteniendo el orden sin intervención."
+                }
+            },
+            {
+                year: "2020s",
+                hardware: {
+                    name: "TPUs e IoT (Industria 4.0)",
+                    limit: "Las CPUs tradicionales creaban un cuello de botella para las operaciones matemáticas matriciales masivas que exige el Deep Learning.",
+                    jump: "Creación de circuitos integrados específicos (ASICs) para redes neuronales y un despliegue ubicuo de sensores IoT en plantas industriales.",
+                    entropy: "Muestreo exhaustivo del mundo físico. Los sensores transforman el caos de variables físicas en flujos de datos estructurados."
+                },
+                software: {
+                    name: "Modelos de Lenguaje Grande (LLMs) y ML",
+                    limit: "Los sistemas basados en reglas lógicas tradicionales eran incapaces de encontrar correlaciones en Exabytes de datos no estructurados.",
+                    jump: "Redes neuronales con billones de parámetros (arquitecturas Transformer) capaces de inferir contexto semántico y automatizar código.",
+                    entropy: "La IA actúa como el filtro entrópico definitivo: absorbe el ruido masivo del Big Data y extrae patrones matemáticos deterministas."
+                },
+                networks: {
+                    name: "5G y Ultra Baja Latencia",
+                    limit: "Las redes 4G poseían un exceso de sobrecarga en protocolos, lo que impedía la comunicación autónoma máquina a máquina (M2M) crítica.",
+                    jump: "El Network Slicing (segmentación de red virtual) sobre infraestructura 5G permitió latencias sub-milisegundo y soporte de hiperdensidad.",
+                    entropy: "Gestión predictiva del espectro electromagnético que evita colisiones de paquetes, manteniendo la estabilidad de sistemas autónomos."
+                }
+            },
+            {
+                year: "2026",
+                isConvergence: true,
+                hardware: {
+                    name: "Infraestructura Cloud Nexus",
+                    limit: "Servidores locales fijos incapaces de soportar picos de ingesta de datos transaccionales masivos.",
+                    jump: "Clústeres elásticos que escalan según demanda, garantizando alta disponibilidad y resiliencia ante fallos locales.",
+                    entropy: "El uso de IaC (Infraestructura como Código) previene la degradación, eliminando errores de configuración manual."
+                },
+                software: {
+                    name: "Ecosistema Microservicios (Java/Spring)",
+                    limit: "Silos de información aislados que generan puntos ciegos graves en la auditoría y trazabilidad de datos.",
+                    jump: "Arquitecturas en Spring Boot y contenedores que gestionan la trazabilidad end-to-end con motores de inferencia.",
+                    entropy: "Pipelines que actúan como purificadores algorítmicos, transformando carga bruta en información limpia y estructurada."
+                },
+                networks: {
+                    name: "API Gateways y Orquestación Segura",
+                    limit: "Comunicación descontrolada entre docenas de microservicios que expone la red a brechas de seguridad y cuellos de botella rígidos.",
+                    jump: "Despliegue de un punto de entrada unificado y enrutamiento inteligente, consolidando la arquitectura conectada por equipos.",
+                    entropy: "El Gateway filtra, enruta y autentica cada petición externa e interna. Asegurando un flujo de transacciones 100% predecible."
+                }
+            }
+        ];
+
+        function createNode(data, category, color) {
+            const node = document.createElement('div');
+            node.className = 'node' + (data.isConvergence ? ' node-nexus' : '');
+
+            node.innerHTML = `
+                <div class="node-year">${data.year}</div>
+                <div class="node-card">
+                    <h4>${data[category.toLowerCase()].name}</h4>
+                </div>
+            `;
+
+            node.onclick = () => {
+                document.getElementById('modalCategory').innerText = category;
+                document.getElementById('modalCategory').style.color = color;
+                document.getElementById('modalTitle').innerText = data[category.toLowerCase()].name;
+                document.getElementById('modalLimit').innerText = data[category.toLowerCase()].limit;
+                document.getElementById('modalJump').innerText = data[category.toLowerCase()].jump;
+                document.getElementById('modalEntropy').innerText = data[category.toLowerCase()].entropy;
+
+                document.getElementById('modalOverlay').style.display = 'flex';
+                document.body.classList.add('modal-open');
+            };
+
+            return node;
+        }
+
+        const hwRow = document.getElementById('row-hardware');
+        const swRow = document.getElementById('row-software');
+        const netRow = document.getElementById('row-networks');
+
+        timelineData.forEach(item => {
+            hwRow.appendChild(createNode(item, 'Hardware', 'var(--hw-color)'));
+            swRow.appendChild(createNode(item, 'Software', 'var(--sw-color)'));
+            netRow.appendChild(createNode(item, 'Networks', 'var(--net-color)'));
+        });
+
+        // Cerrar Modal
+        const closeBtn = document.getElementById('closeModal');
+        const overlay = document.getElementById('modalOverlay');
+
+        const close = () => {
+            overlay.style.display = 'none';
+            document.body.classList.remove('modal-open');
+        };
+
+        closeBtn.onclick = close;
+        overlay.onclick = (e) => { if (e.target === overlay) close(); };
+
+        // Arrastre del ratón para scroll
+        const slider = document.getElementById('roadmapWrapper');
+        let isDown = false;
+        let startX;
+        let scrollLeft;
+
+        slider.addEventListener('mousedown', (e) => {
+            isDown = true;
+            slider.style.cursor = 'grabbing';
+            startX = e.pageX - slider.offsetLeft;
+            scrollLeft = slider.scrollLeft;
+        });
+        slider.addEventListener('mouseleave', () => {
+            isDown = false;
+            slider.style.cursor = 'grab';
+        });
+        slider.addEventListener('mouseup', () => {
+            isDown = false;
+            slider.style.cursor = 'grab';
+        });
+        slider.addEventListener('mousemove', (e) => {
+            if (!isDown) return;
+            e.preventDefault();
+            const x = e.pageX - slider.offsetLeft;
+            const walk = (x - startX) * 2;
+            slider.scrollLeft = scrollLeft - walk;
+        });
+    </script>
+    <script>
+        const toggleBtn = document.getElementById('dark-mode-toggle');
+        const themeIcon = document.getElementById('theme-icon');
+        const body = document.body;
+        const logoImg = document.querySelector('.logo-img');
+
+        function applyTheme(isDark) {
+            if (isDark) {
+                body.classList.add('dark-mode');
+                themeIcon.innerText = '☀️';
+                if (logoImg) logoImg.style.filter = 'brightness(1.2) contrast(1.1)';
+            } else {
+                body.classList.remove('dark-mode');
+                themeIcon.innerText = '🌙';
+                if (logoImg) logoImg.style.filter = 'none';
+            }
+        }
+
+        // Al cargar la página, verificamos si ya había un tema guardado
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme === 'dark') {
+            applyTheme(true);
+        }
+
+        // Escuchamos el clic para cambiar el tema y guardarlo
+        toggleBtn.addEventListener('click', () => {
+            const isNowDark = !body.classList.contains('dark-mode');
+            applyTheme(isNowDark);
+            localStorage.setItem('theme', isNowDark ? 'dark' : 'light');
+        });
+    </script>
+
+</body>
+
+</html>

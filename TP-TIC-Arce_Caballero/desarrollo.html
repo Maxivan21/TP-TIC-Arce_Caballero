@@ -1,0 +1,675 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nexus Solutions | Desarrollo Técnico y Documentación</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* --- Variables Corporativas --- */
+        :root {
+            --primary-blue: #0A2540;     
+            --secondary-blue: #0052CC;   
+            --accent-cyan: #00B8D9;      
+            --bg-light: #F4F5F7;         
+            --bg-body: #FAFBFC;
+            --text-main: #172B4D;        
+            --text-muted: #5E6C84;       
+            --border-color: #DFE1E6;
+            --white: #FFFFFF;
+            --success: #00875A;
+            --danger: #DE350B;
+            --transition: all 0.3s ease;
+        }
+        /* --- VARIABLES PARA MODO OSCURO (CORREGIDO) --- */
+        body.dark-mode {
+            /* Fondo y Superficies */
+            --bg-body: #050505;
+            --bg-light: #121212;
+            --white: #1A1A1A;
+            --border-color: #333333;
+
+            /* Textos Principalmente */
+            --primary-blue: #E6EFFF;  /* Ahora los títulos serán blanco-azulados */
+            --text-main: #F4F5F7;     /* Texto de párrafos en blanco grisáceo */
+            --text-muted: #B3D4FF;    /* Texto secundario en azul claro */
+            --secondary-blue: #4791FF; /* Un azul más brillante para que resalte */
+
+            /* Fondo animado oscuro */
+            background: linear-gradient(-45deg, #050505, #0A192F, #121212, #050505);
+        }
+
+        /* --- AJUSTES EXTRA DE LEGIBILIDAD PARA MODO OSCURO --- */
+
+        /* Asegura que los enlaces del navbar se vean bien */
+        body.dark-mode nav {
+            background: rgba(10, 25, 64, 0.95);
+            border-bottom: 1px solid #333;
+        }
+
+        body.dark-mode .nav-links a {
+            color: #B3D4FF;
+        }
+
+        /* Mejora el contraste de las tarjetas y contenedores */
+        body.dark-mode .phil-card, 
+        body.dark-mode .academic-dashboard,
+        body.dark-mode .member-card,
+        body.dark-mode .doc-card,
+        body.dark-mode .sidebar,
+        body.dark-mode .term-card,
+        body.dark-mode .info-box {
+            background: #1A1A1A;
+            border-color: #333;
+            color: #F4F5F7;
+        }
+
+        /* Ajuste para tablas en modo oscuro */
+        body.dark-mode table {
+            border-color: #333;
+        }
+        body.dark-mode th {
+            background: #252525;
+            color: var(--secondary-blue);
+        }
+        body.dark-mode td {
+            border-bottom-color: #333;
+            color: #B3D4FF;
+        }
+
+        /* Ajuste para el Sidebar de desarrollo.html */
+        body.dark-mode .sidebar a {
+            color: #B3D4FF;
+        }
+        body.dark-mode .sidebar a:hover,
+        body.dark-mode .sidebar a.active {
+            background: #252525;
+            color: var(--secondary-blue);
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        
+        body { 
+            font-family: 'Inter', sans-serif; 
+            color: var(--text-main); 
+            
+            /* --- Nuevo fondo blanco/gris con degradado animado --- */
+            background: linear-gradient(-45deg, #ffffff, #F4F5F7, #E3E5E8, #ffffff);
+            background-size: 400% 400%;
+            animation: moveLightGradient 15s ease infinite;
+            
+            line-height: 1.6; 
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        /* Animación fluida del fondo */
+        @keyframes moveLightGradient {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* --- Navbar --- */
+        nav { 
+            position: fixed; top: 0; width: 100%; 
+            background: rgba(255, 255, 255, 0.98); 
+            backdrop-filter: blur(10px); 
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05); 
+            z-index: 1000; padding: 15px 0; 
+            transition: var(--transition);
+        }
+        .nav-container { display: flex; justify-content: space-between; align-items: center; max-width: 1400px; margin: 0 auto; padding: 0 20px; }
+        .logo { font-size: 1.5rem; font-weight: 700; color: var(--primary-blue); text-decoration: none; }
+        .logo span { color: var(--secondary-blue); }
+        .nav-links { list-style: none; display: flex; gap: 30px; align-items: center; }
+        .nav-links a { text-decoration: none; color: var(--text-muted); font-weight: 600; font-size: 0.9rem; text-transform: uppercase; transition: var(--transition); }
+        .nav-links a:hover, .nav-links a.active { color: var(--secondary-blue); }
+
+        /* --- Header --- */
+        .page-header { 
+            background: linear-gradient(135deg, var(--primary-blue) 0%, #153B61 100%); 
+            color: var(--white); 
+            /* Se redujo el padding inferior para un corte más limpio */
+            padding: 140px 0 50px; 
+            text-align: center; 
+        }
+        .page-header h1 { font-size: 3rem; margin-bottom: 15px; font-weight: 700; }
+        .page-header p { color: #B3D4FF; font-size: 1.2rem; max-width: 700px; margin: 0 auto; }
+
+        /* --- Layout de Documentación --- */
+        .doc-layout {
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            gap: 40px;
+            max-width: 1400px;
+            /* Margen positivo para que comience debajo de la cabecera azul */
+            margin: 40px auto 60px; 
+            padding: 0 20px;
+            position: relative;
+            z-index: 10;
+        }
+
+        /* --- Sidebar (TOC) --- */
+        .sidebar {
+            background: var(--white);
+            border-radius: 8px;
+            padding: 30px 20px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+            border: 1px solid var(--border-color);
+            position: sticky;
+            top: 90px;
+            height: max-content;
+            max-height: calc(100vh - 110px);
+            overflow-y: auto;
+        }
+        .sidebar h4 { color: var(--text-muted); font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 15px; }
+        .sidebar ul { list-style: none; }
+        .sidebar li { margin-bottom: 10px; }
+        .sidebar a {
+            text-decoration: none;
+            color: var(--text-main);
+            font-size: 0.95rem;
+            display: block;
+            padding: 8px 12px;
+            border-radius: 6px;
+            transition: var(--transition);
+            border-left: 3px solid transparent;
+        }
+        .sidebar a:hover { background: var(--bg-light); color: var(--secondary-blue); }
+        .sidebar a.active {
+            background: #E6EFFF;
+            color: var(--secondary-blue);
+            font-weight: 600;
+            border-left-color: var(--secondary-blue);
+        }
+
+        /* --- Contenido Principal --- */
+        .content-area section { 
+            margin-bottom: 60px; 
+            /* COMPENSACIÓN DEL SCROLL: Detiene el scroll para que el navbar no tape el título */
+            scroll-margin-top: 110px; 
+        }
+        
+        .section-title { font-size: 2rem; color: var(--primary-blue); margin-bottom: 30px; padding-bottom: 10px; border-bottom: 2px solid var(--border-color); }
+        
+        .doc-card {
+            background: var(--white);
+            border-radius: 8px;
+            padding: 35px;
+            margin-bottom: 25px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.03);
+            border: 1px solid var(--border-color);
+            border-top: 4px solid var(--secondary-blue);
+            transition: var(--transition);
+        }
+        .doc-card:hover { box-shadow: 0 8px 24px rgba(0,0,0,0.06); transform: translateY(-2px); }
+        .doc-card h3 { font-size: 1.4rem; color: var(--primary-blue); margin-bottom: 20px; display: flex; align-items: center; gap: 10px; }
+        .doc-card p { margin-bottom: 15px; color: var(--text-muted); }
+
+        /* --- Elementos UI Empresariales --- */
+        .grid-3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; }
+        .grid-2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 25px; }
+        
+        .info-box {
+            background: var(--bg-light);
+            padding: 20px;
+            border-radius: 6px;
+            border-left: 3px solid var(--accent-cyan);
+        }
+        .info-box h4 { color: var(--primary-blue); margin-bottom: 10px; font-size: 1.1rem; }
+
+        /* Diagrama de Flujo Corporativo */
+        .flowchart {
+            display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap;
+            background: var(--bg-light); padding: 25px; border-radius: 8px; border: 1px solid var(--border-color);
+            margin-top: 20px;
+        }
+        .flow-node {
+            background: var(--white); padding: 15px 20px; border-radius: 6px; border: 1px solid var(--border-color);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04); text-align: center; flex: 1; min-width: 150px;
+            border-top: 3px solid var(--primary-blue);
+        }
+        .flow-node strong { display: block; color: var(--secondary-blue); font-size: 0.85rem; letter-spacing: 1px; margin-bottom: 8px; }
+        .flow-arrow { color: var(--secondary-blue); font-size: 1.5rem; padding: 0 15px; font-weight: bold; }
+        /* Ajustes para el Logo */
+        .logo { 
+            display: flex;
+            align-items: center;
+            gap: 12px; /* Espacio entre el logo y el texto */
+            font-size: 1.5rem; 
+            font-weight: 800; 
+            color: var(--primary-blue); 
+            text-decoration: none; 
+            letter-spacing: -0.5px;
+        }
+        .logo span { color: var(--secondary-blue); }
+        .logo-img {
+            height: 36px; /* Altura máxima del logo para que no deforme el navbar */
+            width: auto;
+            object-fit: contain;
+        }
+        /* Pestañas (Tabs) */
+        .tab-container { margin-top: 20px; }
+        .tab-buttons { display: flex; border-bottom: 1px solid var(--border-color); margin-bottom: 20px; gap: 10px; }
+        .tab-btn {
+            background: none; border: none; padding: 10px 20px; font-size: 1rem; font-weight: 600;
+            color: var(--text-muted); cursor: pointer; border-bottom: 3px solid transparent; transition: var(--transition);
+        }
+        .tab-btn:hover { color: var(--secondary-blue); }
+        .tab-btn.active { color: var(--secondary-blue); border-bottom-color: var(--secondary-blue); }
+        .tab-content { display: none; animation: fadeIn 0.5s ease; }
+        .tab-content.active { display: block; }
+
+        /* Tablas Corporativas */
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; background: var(--white); border-radius: 8px; overflow: hidden; border: 1px solid var(--border-color); }
+        th, td { padding: 15px 20px; text-align: left; border-bottom: 1px solid var(--border-color); }
+        th { background: var(--bg-light); color: var(--primary-blue); font-weight: 600; text-transform: uppercase; font-size: 0.85rem; letter-spacing: 0.5px; }
+        tr:hover td { background: var(--bg-body); }
+
+        /* Listas */
+        .corp-list { list-style: none; }
+        .corp-list li { position: relative; padding-left: 25px; margin-bottom: 12px; color: var(--text-muted); }
+        .corp-list li::before { content: '→'; position: absolute; left: 0; color: var(--secondary-blue); font-weight: bold; }
+
+        /* Etiquetas */
+        .badge { display: inline-block; padding: 4px 10px; border-radius: 12px; font-size: 0.75rem; font-weight: 700; background: #E6EFFF; color: var(--secondary-blue); margin-bottom: 10px; }
+        .badge-success { background: #E3FCEF; color: var(--success); }
+        .badge-danger { background: #FFEBE6; color: var(--danger); }
+
+        /* Animaciones */
+        .reveal { opacity: 0; transform: translateY(30px); transition: all 0.6s cubic-bezier(0.5, 0, 0, 1); }
+        .reveal.visible { opacity: 1; transform: translateY(0); }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        footer { background-color: var(--primary-blue); color: #8C9BAB; padding: 40px 0; margin-top: 60px; text-align: center; border-top: 5px solid var(--secondary-blue); }
+
+        @media (max-width: 992px) {
+            .doc-layout { grid-template-columns: 1fr; }
+            .sidebar { position: static; margin-bottom: 30px; }
+            .flowchart { flex-direction: column; gap: 15px; }
+            .flow-arrow { transform: rotate(90deg); padding: 10px 0; }
+        }
+    </style>
+</head>
+<body>
+    
+    <nav>
+        <div class="nav-container">
+            <a href="index.html" class="logo">
+                <img src="logo.png" alt="Nexus Logo" class="logo-img">
+                <div>Nexus<span>Solutions</span></div>
+            </a>
+            <ul class="nav-links">
+                <li><a href="index.html">Inicio</a></li>
+                <li><a href="glosario.html">Glosario TIC</a></li>
+                <li><a href="desarrollo.html" class="active">Desarrollo TP</a></li>
+                <li><a href="infografia.html">Infografía</a></li>
+                <li>
+                    <button id="dark-mode-toggle" style="background:none; border:none; cursor:pointer; font-size:1.2rem; display:flex; align-items:center;">
+                        <span id="theme-icon">🌙</span>
+                    </button>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <header class="page-header">
+        <div class="container">
+            <h1>Documentación Técnica Corporativa</h1>
+            <p>Reporte integral sobre Sistemas de Información, Dinámica Organizacional y Tecnologías de la Información.</p>
+        </div>
+    </header>
+
+    <div class="doc-layout">
+        <aside class="sidebar">
+            <h4>Índice de Contenidos</h4>
+            <ul id="toc-menu">
+                <li><a href="#parte1" class="active">I. Fundamentos de Investigación</a></li>
+                <li><a href="#parte2">II. Teoría General de Sistemas</a></li>
+                <li><a href="#parte3">III. Tecnologías de la Información</a></li>
+            </ul>
+        </aside>
+
+        <main class="content-area">
+            
+            <section id="parte1">
+                <h2 class="section-title">Parte I: Fundamentos de Investigación</h2>
+
+                <div class="doc-card reveal">
+                    <h3>1. Arquitectura de la Información</h3>
+                    <p>Comprender la transformación de la materia prima en conocimiento estructurado es vital para el modelado de bases de datos y sistemas de inteligencia de negocios.</p>
+                    <div class="grid-3">
+                        <div class="info-box">
+                            <span class="badge">Nivel 1</span>
+                            <h4>Dato</h4>
+                            <p>Hechos discretos, aislados y objetivos que por sí solos no generan valor. Son la materia prima fundamental que el sistema requiere captar.</p>
+                            <p><em>Ej: "25", "Arce", "Aprobado".</em></p>
+                        </div>
+                        <div class="info-box">
+                            <span class="badge">Nivel 2</span>
+                            <h4>Información</h4>
+                            <p>Resultado de tomar los datos, ordenarlos y procesarlos. Al relacionarse entre sí, generan contexto y pasan a ser útiles.</p>
+                            <p><em>Ej: "Arce tiene 25 años".</em></p>
+                        </div>
+                        <div class="info-box">
+                            <span class="badge">Nivel 3</span>
+                            <h4>Resultado</h4>
+                            <p>Salida del sistema tras el procesamiento. Funciona como retroalimentación para corregir desvíos y cumplir el objetivo.</p>
+                            <p><em>Ej: "El alumno aprobó la materia".</em></p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="doc-card reveal">
+                    <h3>2. Informática vs. Computer Science</h3>
+                    <div class="grid-2">
+                        <div>
+                            <h4 style="color: var(--primary-blue); margin-bottom: 10px;">Informática (Enfoque Práctico)</h4>
+                            <p>Disciplina encargada del procesamiento automático de la información mediante hardware, software y datos. Se orienta a la aplicación práctica para resolver problemas reales en las organizaciones.</p>
+                        </div>
+                        <div>
+                            <h4 style="color: var(--primary-blue); margin-bottom: 10px;">Computer Science (Enfoque Teórico)</h4>
+                            <p>Rama científica que estudia fundamentos lógicos, algoritmos, estructuras de datos, Inteligencia Artificial y teoría de la computación. <em>Ej: Diseñar un nuevo algoritmo de encriptación.</em></p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="doc-card reveal">
+                    <h3>3. Telemática en el Entorno Corporativo</h3>
+                    <p>Integración absoluta entre informática y telecomunicaciones para transmitir, procesar y almacenar información a distancia.</p>
+                    
+                    <div class="tab-container">
+                        <div class="tab-buttons">
+                            <button class="tab-btn active" onclick="openTab(event, 'tab-wsp')">WhatsApp</button>
+                            <button class="tab-btn" onclick="openTab(event, 'tab-uber')">Uber</button>
+                            <button class="tab-btn" onclick="openTab(event, 'tab-netflix')">Netflix</button>
+                        </div>
+                        
+                        <div id="tab-wsp" class="tab-content active info-box">
+                            <h4>Arquitectura WhatsApp</h4>
+                            <ul class="corp-list">
+                                <li><strong>Telecomunicaciones:</strong> Transmisión de datos (mensajes, voz, video) vía redes WiFi o móviles 4G/5G.</li>
+                                <li><strong>Informática:</strong> Procesa información, organiza bases de datos locales, gestiona chats y aplica cifrado de extremo a extremo (E2EE).</li>
+                            </ul>
+                        </div>
+                        <div id="tab-uber" class="tab-content info-box">
+                            <h4>Arquitectura Uber</h4>
+                            <ul class="corp-list">
+                                <li><strong>Telecomunicaciones:</strong> Comunicación bidireccional celular-servidor y telemetría GPS en tiempo real.</li>
+                                <li><strong>Informática:</strong> Motor de inferencia que procesa ubicación, calcula rutas dinámicas, estima tarifas y gestiona pasarelas de pago.</li>
+                            </ul>
+                        </div>
+                        <div id="tab-netflix" class="tab-content info-box">
+                            <h4>Arquitectura Netflix</h4>
+                            <ul class="corp-list">
+                                <li><strong>Telecomunicaciones:</strong> Envío masivo y continuo de streaming (video/audio) desde CDNs al cliente final.</li>
+                                <li><strong>Informática:</strong> Algoritmos de compresión, adaptación dinámica de calidad según ancho de banda, y Machine Learning para motores de recomendación.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="doc-card reveal">
+                    <h3>4. Ciclo de Procesamiento (Business Logic)</h3>
+                    <p>Modelado de flujos de sistemas de información académicos y transaccionales.</p>
+                    
+                    <h4 style="margin-top: 20px;">Caso de Uso A: Autenticación SIU Guaraní</h4>
+                    <div class="flowchart">
+                        <div class="flow-node"><strong>1. ENTRADA</strong>Captura de credenciales (Usuario y Password).</div>
+                        <div class="flow-arrow">➔</div>
+                        <div class="flow-node"><strong>2. PROCESO</strong>Validación de hash contra Base de Datos.</div>
+                        <div class="flow-arrow">➔</div>
+                        <div class="flow-node" style="border-top-color: var(--success);"><strong>3. SALIDA</strong>Emisión de token de sesión (Acceso Permitido).</div>
+                    </div>
+
+                    <h4 style="margin-top: 30px;">Caso de Uso B: Motor de Reglas (Inscripción)</h4>
+                    <div class="flowchart">
+                        <div class="flow-node"><strong>1. ENTRADA</strong>Parámetros: LU, DNI, Carrera, Código de Materia.</div>
+                        <div class="flow-arrow">➔</div>
+                        <div class="flow-node"><strong>2. PROCESO</strong>Motor de reglas evalúa el árbol de correlatividades.</div>
+                        <div class="flow-arrow">➔</div>
+                        <div class="flow-node" style="border-top-color: var(--success);"><strong>3. SALIDA</strong>Confirmación de transacción (Inscripción).</div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="parte2">
+                <h2 class="section-title">Parte II: Teoría General de Sistemas (TGS)</h2>
+
+                <div class="doc-card reveal">
+                    <h3>1. Fundamentos de Bertalanffy</h3>
+                    <ul class="corp-list">
+                        <li><strong>Origen:</strong> Surgió en la posguerra para gestionar la creciente complejidad tecnológica, superando el enfoque reduccionista tradicional.</li>
+                        <li><strong>Isomorfismo:</strong> Crea un lenguaje común e interdisciplinario, descubriendo leyes aplicables tanto a la física como a la sociología.</li>
+                        <li><strong>Visión Organizacional:</strong> Concibe a las empresas como "sistemas abiertos" que interactúan orgánicamente con su entorno.</li>
+                    </ul>
+                </div>
+
+                <div class="doc-card reveal">
+                    <h3>2. Glosario de Dinámica de Sistemas</h3>
+                    <div class="grid-2">
+                        <div class="info-box">
+                            <h4>Entropía y Negentropía</h4>
+                            <p>La <strong>Entropía</strong> es la tendencia natural al caos y desorden operativo. La <strong>Negentropía</strong> es el mecanismo para contrarrestarla, inyectando energía, información estructurada o rediseñando procesos.</p>
+                        </div>
+                        <div class="info-box">
+                            <h4>Sinergia y Caja Negra</h4>
+                            <p><strong>Sinergia</strong> indica que "el todo es mayor a la suma de las partes". La <strong>Caja Negra</strong> es un modelo de análisis que evalúa sistemas basándose únicamente en sus inputs y outputs.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="doc-card reveal">
+                    <h3>3. Estructura y Comportamiento Sistémico</h3>
+                    <table>
+                        <tr>
+                            <th>Concepto Estratégico</th>
+                            <th>Definición Técnica</th>
+                            <th>Ejemplo Aplicado</th>
+                        </tr>
+                        <tr>
+                            <td><strong>Descomposición</strong></td>
+                            <td>Dividir un sistema complejo en subsistemas elementales para facilitar su gestión.</td>
+                            <td>Arquitectura de microservicios o áreas de un hospital.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Simplificación</strong></td>
+                            <td>Reducir el "ruido" enfocándose en variables críticas para el negocio.</td>
+                            <td>Analíticas que omiten datos irrelevantes del usuario.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Acoplamiento</strong></td>
+                            <td>Nivel de interdependencia entre módulos.</td>
+                            <td>Producción depende estrictamente de logística.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Desacoplamiento</strong></td>
+                            <td>Aislar procesos para evitar que el fallo de uno colapse toda la cadena.</td>
+                            <td>Servidores de pago independientes del catálogo.</td>
+                        </tr>
+                    </table>
+                </div>
+
+                <div class="doc-card reveal" style="border-top-color: var(--accent-cyan);">
+                    <h3>4. Estudio de Caso: Tensión y Adaptación</h3>
+                    <p>La <strong>Tensión</strong> es el desequilibrio provocado por el entorno, mientras que la <strong>Adaptación</strong> es la modificación estructural para sobrevivir.</p>
+                    <div class="info-box" style="background: var(--primary-blue); color: var(--white); margin-top: 15px; border-left: 4px solid var(--accent-cyan);">
+                        <h4 style="color: var(--accent-cyan);">Análisis: Supermercados Comodín en Pandemia</h4>
+                        <p style="color: #B3D4FF;">Las restricciones de movilidad generaron una tensión externa masiva. Para contrarrestar la entropía organizacional, el sistema se adaptó estructuralmente: redujo el peso del subsistema de cajas físicas e invirtió fuertemente en el desarrollo de E-commerce, Dark Stores y logística de última milla.</p>
+                    </div>
+                </div>
+            </section>
+
+            <section id="parte3">
+                <h2 class="section-title">Parte III: Tecnologías de la Información (TIC)</h2>
+
+                <div class="doc-card reveal">
+                    <h3>1. Definición y Propósito</h3>
+                    <p>Las TIC son el conjunto de infraestructuras, herramientas y sistemas que permiten crear, procesar, almacenar y transmitir datos. Su objetivo central corporativo es optimizar procesos, democratizar el acceso a la información y acortar brechas operativas en sectores críticos como salud, finanzas y educación.</p>
+                </div>
+
+                <div class="doc-card reveal">
+                    <h3>2. Atributos de Infraestructura TIC</h3>
+                    <div class="grid-3">
+                        <div class="info-box"><strong>Ubicuidad</strong><br><span style="font-size:0.9rem;color:var(--text-muted)">Acceso global 24/7 sin barreras geográficas (Ej. Cloud).</span></div>
+                        <div class="info-box"><strong>Velocidad</strong><br><span style="font-size:0.9rem;color:var(--text-muted)">Transmisión de datos en tiempo real y baja latencia.</span></div>
+                        <div class="info-box"><strong>Volumen</strong><br><span style="font-size:0.9rem;color:var(--text-muted)">Capacidad de procesamiento masivo (Big Data).</span></div>
+                    </div>
+                </div>
+
+                <div class="doc-card reveal">
+                    <h3>3. Matriz de Impacto Organizacional</h3>
+                    <div class="grid-2">
+                        <div style="border: 1px solid var(--border-color); border-radius: 6px; padding: 20px; border-top: 3px solid var(--success);">
+                            <h4 style="color: var(--success); margin-bottom: 15px;">Fortalezas (Ventajas)</h4>
+                            <ul class="corp-list">
+                                <li>Conectividad global e inmediatez comunicacional.</li>
+                                <li>Automatización de procesos repetitivos y reducción de costos.</li>
+                                <li>Fomento de ecosistemas colaborativos e inteligencia colectiva.</li>
+                            </ul>
+                        </div>
+                        <div style="border: 1px solid var(--border-color); border-radius: 6px; padding: 20px; border-top: 3px solid var(--danger);">
+                            <h4 style="color: var(--danger); margin-bottom: 15px;">Riesgos (Desventajas)</h4>
+                            <ul class="corp-list">
+                                <li>Saturación (Infoxicación) que paraliza la toma de decisiones.</li>
+                                <li>Vulnerabilidades de ciberseguridad corporativa.</li>
+                                <li>Desfase y extinción de empresas que no logran la transformación digital.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="doc-card reveal">
+                    <h3>4. Convergencia Tecnológica</h3>
+                    <p>La Informática y las Telecomunicaciones actúan como pilares complementarios. Las TIC representan la sinergia arquitectónica de ambas disciplinas.</p>
+                    <table>
+                        <tr>
+                            <th>Dominio</th>
+                            <th>Función Principal</th>
+                            <th>Activos Representativos</th>
+                        </tr>
+                        <tr>
+                            <td><strong>Informática</strong></td>
+                            <td>Procesamiento, persistencia y estructuración de datos.</td>
+                            <td>Software, Servidores, BD relacionales.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Telecomunicaciones</strong></td>
+                            <td>Enrutamiento y transmisión de señal a distancia.</td>
+                            <td>Fibra óptica, Satélites, Protocolo TCP/IP.</td>
+                        </tr>
+                        <tr>
+                            <td style="color: var(--secondary-blue); font-weight: 600;"><strong>TIC (Integración)</strong></td>
+                            <td>Orquestación de procesos globales distribuidos.</td>
+                            <td>Cloud Computing, Plataformas SaaS (Drive, AWS).</td>
+                        </tr>
+                    </table>
+                </div>
+
+            </section>
+        </main>
+    </div>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2026 Nexus Solutions. Reporte de Auditoría Técnica de Sistemas.</p>
+        </div>
+    </footer>
+
+    <script>
+        // 1. Lógica de Pestañas (Tabs)
+        function openTab(evt, tabName) {
+            let i, tabcontent, tablinks;
+            tabcontent = document.getElementsByClassName("tab-content");
+            for (i = 0; i < tabcontent.length; i++) {
+                tabcontent[i].style.display = "none";
+                tabcontent[i].classList.remove("active");
+            }
+            tablinks = document.getElementsByClassName("tab-btn");
+            for (i = 0; i < tablinks.length; i++) {
+                tablinks[i].className = tablinks[i].className.replace(" active", "");
+            }
+            document.getElementById(tabName).style.display = "block";
+            setTimeout(() => document.getElementById(tabName).classList.add("active"), 10);
+            evt.currentTarget.className += " active";
+        }
+
+        // 2. Intersection Observer para revelar elementos al hacer scroll suavemente
+        document.addEventListener("DOMContentLoaded", function() {
+            const reveals = document.querySelectorAll(".reveal");
+            const revealOptions = {
+                threshold: 0.1,
+                rootMargin: "0px 0px -50px 0px"
+            };
+
+            const revealOnScroll = new IntersectionObserver(function(entries, observer) {
+                entries.forEach(entry => {
+                    if (!entry.isIntersecting) {
+                        return;
+                    } else {
+                        entry.target.classList.add("visible");
+                        observer.unobserve(entry.target); // Solo animar una vez
+                    }
+                });
+            }, revealOptions);
+
+            reveals.forEach(reveal => {
+                revealOnScroll.observe(reveal);
+            });
+        });
+
+        // 3. Scrollspy dinámico para la barra lateral
+        window.addEventListener('scroll', () => {
+            let current = '';
+            const sections = document.querySelectorAll('.content-area section');
+            const navLinks = document.querySelectorAll('#toc-menu a');
+
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                const sectionHeight = section.clientHeight;
+                if (scrollY >= (sectionTop - 150)) {
+                    current = section.getAttribute('id');
+                }
+            });
+
+            navLinks.forEach(a => {
+                a.classList.remove('active');
+                if (a.getAttribute('href').includes(current)) {
+                    a.classList.add('active');
+                }
+            });
+        });
+    </script>
+    <script>
+        const toggleBtn = document.getElementById('dark-mode-toggle');
+        const themeIcon = document.getElementById('theme-icon');
+        const body = document.body;
+        const logoImg = document.querySelector('.logo-img');
+
+        function applyTheme(isDark) {
+            if (isDark) {
+                body.classList.add('dark-mode');
+                themeIcon.innerText = '☀️';
+                if(logoImg) logoImg.style.filter = 'brightness(1.2) contrast(1.1)';
+            } else {
+                body.classList.remove('dark-mode');
+                themeIcon.innerText = '🌙';
+                if(logoImg) logoImg.style.filter = 'none';
+            }
+        }
+
+        // Al cargar la página, verificamos si ya había un tema guardado
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme === 'dark') {
+            applyTheme(true);
+        }
+
+        // Escuchamos el clic para cambiar el tema y guardarlo
+        toggleBtn.addEventListener('click', () => {
+            const isNowDark = !body.classList.contains('dark-mode');
+            applyTheme(isNowDark);
+            localStorage.setItem('theme', isNowDark ? 'dark' : 'light');
+        });
+    </script>
+</body>
+</html>

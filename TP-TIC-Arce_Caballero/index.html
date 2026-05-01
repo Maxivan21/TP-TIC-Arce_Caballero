@@ -1,0 +1,904 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nexus Solutions | Inicio y Presentación</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+    <style>
+        /* --- Variables Corporativas --- */
+        :root {
+            --primary-blue: #0A2540;
+            --secondary-blue: #0052CC;
+            --accent-cyan: #00B8D9;
+            --bg-light: #F4F5F7;
+            --bg-body: #FAFBFC;
+            --text-main: #172B4D;
+            --text-muted: #5E6C84;
+            --border-color: #DFE1E6;
+            --white: #FFFFFF;
+            --transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        /* --- VARIABLES PARA MODO OSCURO (CORREGIDO) --- */
+        body.dark-mode {
+            /* Fondo y Superficies */
+            --bg-body: #050505;
+            --bg-light: #121212;
+            --white: #1A1A1A;
+            --border-color: #333333;
+
+            /* Textos Principalmente */
+            --primary-blue: #E6EFFF;
+            /* Ahora los títulos serán blanco-azulados */
+            --text-main: #F4F5F7;
+            /* Texto de párrafos en blanco grisáceo */
+            --text-muted: #B3D4FF;
+            /* Texto secundario en azul claro */
+            --secondary-blue: #4791FF;
+            /* Un azul más brillante para que resalte */
+
+            /* Fondo animado oscuro */
+            background: linear-gradient(-45deg, #050505, #0A192F, #121212, #050505);
+        }
+
+        /* --- AJUSTES EXTRA DE LEGIBILIDAD PARA MODO OSCURO --- */
+
+        /* Asegura que los enlaces del navbar se vean bien */
+        body.dark-mode nav {
+            background: rgba(10, 25, 64, 0.95);
+            border-bottom: 1px solid #333;
+        }
+
+        body.dark-mode .nav-links a {
+            color: #B3D4FF;
+        }
+
+        /* Mejora el contraste de las tarjetas y contenedores */
+        body.dark-mode .phil-card,
+        body.dark-mode .academic-dashboard,
+        body.dark-mode .member-card,
+        body.dark-mode .doc-card,
+        body.dark-mode .sidebar,
+        body.dark-mode .term-card,
+        body.dark-mode .info-box {
+            background: #1A1A1A;
+            border-color: #333;
+            color: #F4F5F7;
+        }
+
+        /* Ajuste para tablas en modo oscuro */
+        body.dark-mode table {
+            border-color: #333;
+        }
+
+        body.dark-mode th {
+            background: #252525;
+            color: var(--secondary-blue);
+        }
+
+        body.dark-mode td {
+            border-bottom-color: #333;
+            color: #B3D4FF;
+        }
+
+        /* Ajuste para el Sidebar de desarrollo.html */
+        body.dark-mode .sidebar a {
+            color: #B3D4FF;
+        }
+
+        body.dark-mode .sidebar a:hover,
+        body.dark-mode .sidebar a.active {
+            background: #252525;
+            color: var(--secondary-blue);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            color: var(--text-main);
+
+            /* --- Fondo blanco/gris con degradado animado --- */
+            background: linear-gradient(-45deg, #ffffff, #F4F5F7, #E3E5E8, #ffffff);
+            background-size: 400% 400%;
+            animation: moveLightGradient 15s ease infinite;
+
+            line-height: 1.6;
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        /* Animación fluida del fondo claro */
+        @keyframes moveLightGradient {
+            0% {
+                background-position: 0% 50%;
+            }
+
+            50% {
+                background-position: 100% 50%;
+            }
+
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+
+        /* --- Navbar --- */
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.05);
+            z-index: 1000;
+            padding: 15px 0;
+            transition: var(--transition);
+        }
+
+        .nav-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Ajustes para el Logo */
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            /* Espacio entre el logo y el texto */
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--primary-blue);
+            text-decoration: none;
+            letter-spacing: -0.5px;
+        }
+
+        .logo span {
+            color: var(--secondary-blue);
+        }
+
+        .logo-img {
+            height: 36px;
+            /* Altura máxima del logo para que no deforme el navbar */
+            width: auto;
+            object-fit: contain;
+        }
+
+        .nav-links {
+            list-style: none;
+            display: flex;
+            gap: 30px;
+            align-items: center;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--text-muted);
+            font-weight: 600;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            transition: var(--transition);
+        }
+
+        .nav-links a:hover,
+        .nav-links a.active {
+            color: var(--secondary-blue);
+        }
+
+        /* --- Hero Section Dinámico --- */
+        .hero {
+            position: relative;
+            padding: 180px 20px 100px;
+            background: linear-gradient(135deg, var(--primary-blue) 0%, #102A45 100%);
+            color: var(--white);
+            text-align: center;
+            min-height: 80vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        /* Fondo CSS Animado (Red de Datos Sutil) */
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image:
+                linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+            background-size: 40px 40px;
+            z-index: 1;
+            transform: perspective(500px) rotateX(60deg) translateY(-100px) translateZ(-200px);
+            animation: gridMove 20s linear infinite;
+        }
+
+        @keyframes gridMove {
+            0% {
+                background-position: 0 0;
+            }
+
+            100% {
+                background-position: 0 40px;
+            }
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            max-width: 900px;
+        }
+
+        .hero-pre {
+            font-size: 1rem;
+            color: var(--accent-cyan);
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            margin-bottom: 20px;
+            display: block;
+        }
+
+        /* Efecto Nombre Empresa Dinámico */
+        .hero h1 {
+            font-size: 5rem;
+            font-weight: 900;
+            margin-bottom: 20px;
+            line-height: 1.1;
+            letter-spacing: -2px;
+        }
+
+        .text-gradient {
+            background: linear-gradient(to right, #FFFFFF 20%, var(--accent-cyan) 40%, var(--secondary-blue) 60%, #FFFFFF 80%);
+            background-size: 200% auto;
+            color: #000;
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: shine 4s linear infinite;
+        }
+
+        @keyframes shine {
+            to {
+                background-position: 200% center;
+            }
+        }
+
+        .hero p {
+            font-size: 1.25rem;
+            color: #B3D4FF;
+            max-width: 700px;
+            margin: 0 auto;
+            font-weight: 300;
+        }
+
+        /* --- Contenedor Principal --- */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 80px 20px;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 2.2rem;
+            color: var(--primary-blue);
+            margin-bottom: 50px;
+            font-weight: 800;
+            position: relative;
+        }
+
+        .section-title::after {
+            content: '';
+            display: block;
+            width: 60px;
+            height: 4px;
+            background: var(--secondary-blue);
+            margin: 15px auto 0;
+            border-radius: 2px;
+        }
+
+        /* --- Resumen Ejecutivo (Datos Académicos) --- */
+        .academic-dashboard {
+            background: var(--white);
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(10, 37, 64, 0.05);
+            border: 1px solid var(--border-color);
+            padding: 40px;
+            margin-bottom: 80px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .academic-dashboard::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: var(--accent-cyan);
+        }
+
+        .dashboard-header {
+            margin-bottom: 30px;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 15px;
+        }
+
+        .dashboard-header h3 {
+            color: var(--primary-blue);
+            font-size: 1.2rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 30px;
+        }
+
+        .data-item {
+            background: var(--bg-light);
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 3px solid var(--secondary-blue);
+        }
+
+        .data-item h4 {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+        }
+
+        .data-item p {
+            font-size: 1.1rem;
+            color: var(--primary-blue);
+            font-weight: 600;
+        }
+
+        /* --- Filosofía Corporativa --- */
+        .philosophy-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-bottom: 80px;
+        }
+
+        .phil-card {
+            background: var(--white);
+            padding: 40px 30px;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+            transition: var(--transition);
+        }
+
+        .phil-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0, 82, 204, 0.1);
+        }
+
+        .phil-card h3 {
+            color: var(--primary-blue);
+            margin-bottom: 15px;
+            font-size: 1.4rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .phil-card p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+        }
+
+        /* --- Equipo Directivo --- */
+        .team-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 40px;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .member-card {
+            background: var(--white);
+            border-radius: 16px;
+            padding: 40px 30px;
+            text-align: center;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.04);
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .member-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
+            border-color: var(--secondary-blue);
+        }
+
+        .avatar {
+            width: 100px;
+            height: 100px;
+            margin: 0 auto 20px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            font-weight: 800;
+            background: var(--bg-light);
+            color: var(--primary-blue);
+            border: 3px solid var(--white);
+            box-shadow: 0 8px 20px rgba(0, 82, 204, 0.15);
+            position: relative;
+            z-index: 2;
+        }
+
+        .member-card h3 {
+            font-size: 1.4rem;
+            color: var(--primary-blue);
+            margin-bottom: 5px;
+        }
+
+        .lu-text {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            margin-bottom: 15px;
+            font-family: monospace;
+            background: var(--bg-light);
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 12px;
+        }
+
+        .role-badge {
+            display: inline-block;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            background: #E6EFFF;
+            color: var(--secondary-blue);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* Animaciones Reveal */
+        .reveal {
+            opacity: 0;
+            transform: translateY(40px);
+            transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Footer */
+        footer {
+            background-color: var(--primary-blue);
+            color: #8C9BAB;
+            padding: 50px 0 30px;
+            border-top: 5px solid var(--secondary-blue);
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 40px;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .footer-col h4 {
+            color: var(--white);
+            margin-bottom: 20px;
+            font-size: 1.1rem;
+        }
+
+        .footer-col p,
+        .footer-col a {
+            color: #8C9BAB;
+            text-decoration: none;
+            font-size: 0.95rem;
+            display: block;
+            margin-bottom: 10px;
+            transition: var(--transition);
+        }
+
+        .footer-col a:hover {
+            color: var(--white);
+            padding-left: 5px;
+        }
+
+        .footer-bottom {
+            text-align: center;
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            font-size: 0.85rem;
+        }
+
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 3rem;
+            }
+
+            .hero-pre {
+                font-size: 0.8rem;
+            }
+        }
+
+        /* --- Preloader Corporativo --- */
+        #preloader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            /* Usa las variables para adaptarse al modo claro/oscuro automáticamente */
+            background-color: var(--bg-body);
+            z-index: 9999;
+            /* Asegura que esté por encima de todo */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: opacity 0.6s ease, visibility 0.6s ease;
+        }
+
+        .loader-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 25px;
+        }
+
+        .loader-logo {
+            height: 50px;
+            width: auto;
+            animation: pulseLogo 1.5s infinite alternate ease-in-out;
+        }
+
+        .loader-bar-container {
+            width: 200px;
+            height: 3px;
+            background: var(--border-color);
+            border-radius: 4px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .loader-bar {
+            width: 0%;
+            height: 100%;
+            background: var(--secondary-blue);
+            /* La animación de la barra simula una carga de datos */
+            animation: loadingProgress 1.2s cubic-bezier(0.8, 0, 0.2, 1) forwards;
+        }
+
+        .loader-text {
+            font-family: monospace;
+            /* Da el efecto técnico/consola */
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            animation: blinkText 1.5s infinite;
+        }
+
+        /* Animaciones del Loader */
+        @keyframes pulseLogo {
+            from {
+                transform: scale(0.95);
+                opacity: 0.8;
+                filter: drop-shadow(0 0 0 transparent);
+            }
+
+            to {
+                transform: scale(1.05);
+                opacity: 1;
+                filter: drop-shadow(0 0 10px var(--accent-cyan));
+            }
+        }
+
+        @keyframes loadingProgress {
+            0% {
+                width: 0%;
+            }
+
+            40% {
+                width: 40%;
+            }
+
+            60% {
+                width: 80%;
+            }
+
+            100% {
+                width: 100%;
+            }
+        }
+
+        @keyframes blinkText {
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.4;
+            }
+        }
+
+        /* Clase que oculta el preloader cuando la carga termina */
+        body.loaded #preloader {
+            opacity: 0;
+            visibility: hidden;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="preloader">
+        <div class="loader-content">
+            <img src="logo.png" alt="Cargando Nexus" class="loader-logo">
+            <div class="loader-bar-container">
+                <div class="loader-bar"></div>
+            </div>
+            <p class="loader-text">Inicializando Sistemas...</p>
+        </div>
+    </div>
+    <nav>
+        <div class="nav-container">
+            <a href="index.html" class="logo">
+                <img src="logo.png" alt="Nexus Logo" class="logo-img">
+                <div>Nexus<span>Solutions</span></div>
+            </a>
+            <ul class="nav-links">
+                <li><a href="index.html" class="active">Inicio</a></li>
+                <li><a href="glosario.html">Glosario TIC</a></li>
+                <li><a href="desarrollo.html">Desarrollo TP</a></li>
+                <li><a href="infografia.html">Infografía</a></li>
+                <li>
+                    <button id="dark-mode-toggle"
+                        style="background:none; border:none; cursor:pointer; font-size:1.2rem; display:flex; align-items:center;">
+                        <span id="theme-icon">🌙</span>
+                    </button>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <header class="hero">
+        <div class="hero-content">
+            <span class="hero-pre reveal">Sistemas e Ingeniería de la Información</span>
+            <h1 class="reveal" style="transition-delay: 0.1s;">
+                <span class="text-gradient">Nexus Solutions</span>
+            </h1>
+            <p class="reveal" style="transition-delay: 0.2s;">
+                Equipo de consultoría enfocado en la aplicación de tecnologías de vanguardia, dinámicas organizacionales
+                y desarrollo de sistemas de información.
+            </p>
+        </div>
+    </header>
+
+    <main class="container">
+
+        <section class="reveal">
+            <h2 class="section-title">Contexto del Proyecto</h2>
+            <div class="academic-dashboard">
+                <div class="dashboard-header">
+                    <h3>Ficha Técnica Académica</h3>
+                </div>
+                <div class="dashboard-grid">
+                    <div class="data-item">
+                        <h4>Materia</h4>
+                        <p>Teoría de la Información y la Comunicación</p>
+                    </div>
+                    <div class="data-item">
+                        <h4>Carrera</h4>
+                        <p>Ingeniería en Informatica (5to Año)</p>
+                    </div>
+                    <div class="data-item">
+                        <h4>Comisión</h4>
+                        <p>Comisión 4</p>
+                    </div>
+                    <div class="data-item">
+                        <h4>Docentes</h4>
+                        <p> Ing. Fernanda Villarrubia</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="reveal">
+            <h2 class="section-title">Nuestra Filosofía</h2>
+            <div class="philosophy-grid">
+                <div class="phil-card" style="border-top: 4px solid var(--secondary-blue);">
+                    <h3>🎯 Misión</h3>
+                    <p>Proporcionar soluciones tecnológicas robustas que optimicen la gestión operativa de nuestros
+                        clientes, reduciendo la entropía organizacional mediante software estructurado y de alta
+                        calidad.</p>
+                </div>
+                <div class="phil-card" style="border-top: 4px solid var(--primary-blue);">
+                    <h3>👁️ Visión</h3>
+                    <p>Posicionarnos como el socio tecnológico de referencia, reconocidos por nuestra excelencia técnica
+                        en ingeniería de datos, arquitectura de sistemas y desarrollo de plataformas de alta
+                        escalabilidad.</p>
+                </div>
+                <div class="phil-card" style="border-top: 4px solid var(--accent-cyan);">
+                    <h3>💡 Propósito</h3>
+                    <p>Empoderar a las organizaciones democratizando el acceso a herramientas tecnológicas. Creemos
+                        firmemente que la información limpia y estructurada es el motor del crecimiento sostenible.</p>
+                </div>
+            </div>
+        </section>
+        <section class="reveal">
+            <h2 class="section-title">Nuestras Soluciones</h2>
+            <p style="text-align: center; color: var(--text-muted); max-width: 800px; margin: -30px auto 40px;">
+                Desarrollamos arquitecturas a medida que integran analítica avanzada, monitoreo en tiempo real y
+                automatización inteligente.
+            </p>
+
+            <div class="philosophy-grid">
+                <div class="phil-card" style="border-top: 4px solid var(--secondary-blue);">
+                    <div style="font-size: 2rem; margin-bottom: 15px;">🚚</div>
+                    <h3>SIPLOG: Gestión Logística</h3>
+                    <p>Plataforma avanzada de monitoreo y logística diseñada para el <strong>Corredor Bioceánico de
+                            Capricornio</strong>. Permite el seguimiento de activos en tiempo real, gestión de flotas y
+                        optimización de rutas mediante bases de datos relacionales de alta disponibilidad.</p>
+                </div>
+
+                <div class="phil-card" style="border-top: 4px solid var(--accent-cyan);">
+                    <div style="font-size: 2rem; margin-bottom: 15px;">🛰️</div>
+                    <h3>Análisis Geoespacial (GIS)</h3>
+                    <p>Sistema de procesamiento de imágenes satelitales (Copernicus/Sentinel-2) para la vigilancia
+                        ambiental. Implementamos algoritmos de cálculo de índices hídricos (como MNDWI) para el análisis
+                        longitudinal de superficies como la <strong>Laguna de Pozuelos</strong>.</p>
+                </div>
+
+                <div class="phil-card" style="border-top: 4px solid var(--primary-blue);">
+                    <div style="font-size: 2rem; margin-bottom: 15px;">🧠</div>
+                    <h3>Inteligencia de Datos (SBC)</h3>
+                    <p>Desarrollo de <strong>Sistemas Basados en Conocimiento (SBC)</strong> para la toma de decisiones.
+                        Aplicamos motores de reglas y lógica difusa para crear sistemas de recomendación académica y
+                        orientación técnica automatizada.</p>
+                </div>
+            </div>
+        </section>
+        <section class="reveal">
+            <h2 class="section-title">Equipo Directivo</h2>
+            <div class="team-grid">
+                <div class="member-card">
+                    <div class="avatar" style="color: var(--accent-cyan);">MC</div>
+                    <h3>Caballero, Maximiliano Iván</h3>
+                    <div class="lu-text">LU: 9117</div>
+                    <br>
+                    <div class="role-badge"
+                        style="background: rgba(0, 184, 217, 0.1); color: var(--primary-blue); border: 1px solid var(--accent-cyan);">
+                        Desarrollo Web y Sistemas
+                    </div>
+                </div>
+
+                <div class="member-card">
+                    <div class="avatar" style="color: var(--secondary-blue);">AA</div>
+                    <h3>Arce, Alejandro</h3>
+                    <div class="lu-text">LU: 9070 </div>
+                    <br>
+                    <div class="role-badge">
+                        Análisis y Gestión de Datos
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-col">
+                <h4 style="font-size: 1.5rem; font-weight: 800; color: var(--white);">Nexus Solutions</h4>
+                <p>Trabajo Práctico Universitario simulando un entorno de consultoría B2B y desarrollo de software de
+                    nivel empresarial.</p>
+            </div>
+            <div class="footer-col">
+                <h4>Mapa del Sitio</h4>
+                <a href="index.html">Inicio / Presentación</a>
+                <a href="desarrollo.html">Desarrollo Técnico (TP)</a>
+                <a href="glosario.html">Base de Conocimiento</a>
+                <a href="infografia.html">Roadmap Tecnológico</a>
+            </div>
+            <div class="footer-col">
+                <h4>Contacto Académico</h4>
+                <p>Universidad Nacional de Jujuy</p>
+                <p>Facultad de Ingeniería</p>
+                <p>San Salvador de Jujuy, Argentina</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            &copy; 2026 Nexus Solutions. Todos los derechos reservados.
+        </div>
+    </footer>
+
+    <script>
+        // Animación Reveal al hacer scroll
+        function reveal() {
+            var reveals = document.querySelectorAll(".reveal");
+            for (var i = 0; i < reveals.length; i++) {
+                var windowHeight = window.innerHeight;
+                var elementTop = reveals[i].getBoundingClientRect().top;
+                var elementVisible = 100;
+                if (elementTop < windowHeight - elementVisible) {
+                    reveals[i].classList.add("active");
+                }
+            }
+        }
+        window.addEventListener("scroll", reveal);
+        reveal(); // Disparar al cargar la página
+    </script>
+    <script>
+        const toggleBtn = document.getElementById('dark-mode-toggle');
+        const themeIcon = document.getElementById('theme-icon');
+        const body = document.body;
+        const logoImg = document.querySelector('.logo-img');
+
+        function applyTheme(isDark) {
+            if (isDark) {
+                body.classList.add('dark-mode');
+                themeIcon.innerText = '☀️';
+                if (logoImg) logoImg.style.filter = 'brightness(1.2) contrast(1.1)';
+            } else {
+                body.classList.remove('dark-mode');
+                themeIcon.innerText = '🌙';
+                if (logoImg) logoImg.style.filter = 'none';
+            }
+        }
+
+        // Al cargar la página, verificamos si ya había un tema guardado
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme === 'dark') {
+            applyTheme(true);
+        }
+
+        // Escuchamos el clic para cambiar el tema y guardarlo
+        toggleBtn.addEventListener('click', () => {
+            const isNowDark = !body.classList.contains('dark-mode');
+            applyTheme(isNowDark);
+            localStorage.setItem('theme', isNowDark ? 'dark' : 'light');
+        });
+        // --- Lógica del Preloader ---
+        window.addEventListener('load', () => {
+            // Añadimos un pequeño retraso de 1.2 segundos para que se aprecie la animación corporativa
+            setTimeout(() => {
+                document.body.classList.add('loaded');
+            }, 1200);
+        });
+    </script>
+</body>
+
+</html>

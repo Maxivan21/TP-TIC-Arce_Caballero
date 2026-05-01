@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nexus Solutions | Base de Conocimiento</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* --- Variables Corporativas --- */
+        :root {
+            --primary-blue: #0A2540;     
+            --secondary-blue: #0052CC;   
+            --accent-cyan: #00B8D9;      
+            --bg-light: #F4F5F7;         
+            --bg-body: #FAFBFC;
+            --text-main: #172B4D;        
+            --text-muted: #5E6C84;       
+            --border-color: #DFE1E6;
+            --white: #FFFFFF;
+            --transition: all 0.3s ease;
+        }
+        /* --- VARIABLES PARA MODO OSCURO (CORREGIDO) --- */
+        body.dark-mode {
+            /* Fondo y Superficies */
+            --bg-body: #050505;
+            --bg-light: #121212;
+            --white: #1A1A1A;
+            --border-color: #333333;
+
+            /* Textos Principalmente */
+            --primary-blue: #E6EFFF;  /* Ahora los títulos serán blanco-azulados */
+            --text-main: #F4F5F7;     /* Texto de párrafos en blanco grisáceo */
+            --text-muted: #B3D4FF;    /* Texto secundario en azul claro */
+            --secondary-blue: #4791FF; /* Un azul más brillante para que resalte */
+
+            /* Fondo animado oscuro */
+            background: linear-gradient(-45deg, #050505, #0A192F, #121212, #050505);
+        }
+
+        /* --- AJUSTES EXTRA DE LEGIBILIDAD PARA MODO OSCURO --- */
+
+        /* Asegura que los enlaces del navbar se vean bien */
+        body.dark-mode nav {
+            background: rgba(10, 25, 64, 0.95);
+            border-bottom: 1px solid #333;
+        }
+
+        body.dark-mode .nav-links a {
+            color: #B3D4FF;
+        }
+
+        /* Mejora el contraste de las tarjetas y contenedores */
+        body.dark-mode .phil-card, 
+        body.dark-mode .academic-dashboard,
+        body.dark-mode .member-card,
+        body.dark-mode .doc-card,
+        body.dark-mode .sidebar,
+        body.dark-mode .term-card,
+        body.dark-mode .info-box {
+            background: #1A1A1A;
+            border-color: #333;
+            color: #F4F5F7;
+        }
+
+        /* Ajuste para tablas en modo oscuro */
+        body.dark-mode table {
+            border-color: #333;
+        }
+        body.dark-mode th {
+            background: #252525;
+            color: var(--secondary-blue);
+        }
+        body.dark-mode td {
+            border-bottom-color: #333;
+            color: #B3D4FF;
+        }
+
+        /* Ajuste para el Sidebar de desarrollo.html */
+        body.dark-mode .sidebar a {
+            color: #B3D4FF;
+        }
+        body.dark-mode .sidebar a:hover,
+        body.dark-mode .sidebar a.active {
+            background: #252525;
+            color: var(--secondary-blue);
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        
+        body { 
+            font-family: 'Inter', sans-serif; 
+            color: var(--text-main); 
+            
+            /* --- Nuevo fondo blanco/gris con degradado animado --- */
+            background: linear-gradient(-45deg, #ffffff, #F4F5F7, #E3E5E8, #ffffff);
+            background-size: 400% 400%;
+            animation: moveLightGradient 15s ease infinite;
+            
+            line-height: 1.6; 
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        /* Animación fluida del fondo */
+        @keyframes moveLightGradient {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* --- Navbar --- */
+        nav { 
+            position: fixed; top: 0; width: 100%; 
+            background: rgba(255, 255, 255, 0.98); 
+            backdrop-filter: blur(10px); 
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05); 
+            z-index: 1000; padding: 15px 0; 
+            transition: var(--transition);
+        }
+        .nav-container { display: flex; justify-content: space-between; align-items: center; max-width: 1400px; margin: 0 auto; padding: 0 20px; }
+        .logo { font-size: 1.5rem; font-weight: 700; color: var(--primary-blue); text-decoration: none; }
+        .logo span { color: var(--secondary-blue); }
+        .nav-links { list-style: none; display: flex; gap: 30px; align-items: center; }
+        .nav-links a { text-decoration: none; color: var(--text-muted); font-weight: 600; font-size: 0.9rem; text-transform: uppercase; transition: var(--transition); }
+        .nav-links a:hover, .nav-links a.active { color: var(--secondary-blue); }
+
+        /* --- Header y Buscador --- */
+        .page-header { 
+            background: linear-gradient(135deg, var(--primary-blue) 0%, #153B61 100%); 
+            color: var(--white); 
+            padding: 140px 0 60px; 
+            text-align: center; 
+        }
+        .page-header h1 { font-size: 3rem; margin-bottom: 15px; font-weight: 700; }
+        .page-header p { color: #B3D4FF; font-size: 1.1rem; max-width: 700px; margin: 0 auto 30px; }
+
+        .search-container {
+            max-width: 600px;
+            margin: 0 auto;
+            position: relative;
+        }
+        .search-container input {
+            width: 100%;
+            padding: 18px 25px 18px 50px;
+            font-size: 1.1rem;
+            border: none;
+            border-radius: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            outline: none;
+            font-family: 'Inter', sans-serif;
+            color: var(--text-main);
+            transition: var(--transition);
+        }
+        .search-container input:focus {
+            box-shadow: 0 10px 40px rgba(0, 184, 217, 0.3);
+        }
+        .search-icon {
+            position: absolute;
+            left: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+            width: 20px;
+            height: 20px;
+        }
+        /* Ajustes para el Logo */
+        .logo { 
+            display: flex;
+            align-items: center;
+            gap: 12px; /* Espacio entre el logo y el texto */
+            font-size: 1.5rem; 
+            font-weight: 800; 
+            color: var(--primary-blue); 
+            text-decoration: none; 
+            letter-spacing: -0.5px;
+        }
+        .logo span { color: var(--secondary-blue); }
+        .logo-img {
+            height: 36px; /* Altura máxima del logo para que no deforme el navbar */
+            width: auto;
+            object-fit: contain;
+        }
+        /* --- Layout del Glosario --- */
+        .container { max-width: 1300px; margin: 0 auto; padding: 40px 20px 80px; }
+
+        /* Filtro Alfabético */
+        .alpha-filter {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 40px;
+        }
+        .filter-btn {
+            background: var(--white);
+            border: 1px solid var(--border-color);
+            color: var(--text-muted);
+            font-weight: 600;
+            padding: 8px 15px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        .filter-btn:hover { border-color: var(--secondary-blue); color: var(--secondary-blue); }
+        .filter-btn.active {
+            background: var(--secondary-blue);
+            color: var(--white);
+            border-color: var(--secondary-blue);
+            box-shadow: 0 4px 10px rgba(0, 82, 204, 0.2);
+        }
+
+        /* Grid de Términos */
+        .glossary-grid { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); 
+            gap: 25px; 
+        }
+        
+        .term-card { 
+            background: var(--white); 
+            border: 1px solid var(--border-color); 
+            border-radius: 8px; 
+            padding: 30px; 
+            position: relative; 
+            transition: var(--transition);
+            border-top: 4px solid var(--bg-light);
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .term-card:hover { 
+            transform: translateY(-5px); 
+            box-shadow: 0 12px 30px rgba(0,0,0,0.05); 
+            border-top-color: var(--secondary-blue);
+        }
+
+        .term-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .term-card h3 { 
+            font-size: 1.3rem; 
+            color: var(--primary-blue);
+            font-weight: 700;
+        }
+        
+        .letter-badge { 
+            background: #E6EFFF; 
+            color: var(--secondary-blue); 
+            padding: 4px 10px; 
+            border-radius: 6px; 
+            font-size: 0.85rem; 
+            font-weight: 700;
+        }
+        
+        .term-card p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            flex-grow: 1;
+        }
+
+        .external-source { 
+            margin-top: 20px; 
+            padding-top: 15px; 
+            border-top: 1px dashed var(--border-color); 
+            font-size: 0.8rem; 
+            color: #8C9BAB; 
+            font-style: italic; 
+        }
+
+        /* Citas Discretas */
+        .cite { 
+            font-size: 0.75rem; 
+            color: var(--accent-cyan);
+            font-weight: 600;
+            background: rgba(0, 184, 217, 0.1);
+            padding: 2px 6px;
+            border-radius: 4px;
+            margin-left: 5px;
+            display: inline-block;
+        }
+
+        /* Animaciones */
+        .reveal { opacity: 0; transform: translateY(30px); transition: all 0.6s cubic-bezier(0.5, 0, 0, 1); }
+        .reveal.visible { opacity: 1; transform: translateY(0); }
+        
+        /* Mensaje de no resultados */
+        .no-results {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 40px;
+            color: var(--text-muted);
+            font-size: 1.1rem;
+            display: none;
+        }
+
+        footer { background-color: var(--primary-blue); color: #8C9BAB; padding: 40px 0; border-top: 5px solid var(--secondary-blue); text-align: center; }
+
+    </style>
+</head>
+<body>
+    
+    <nav>
+        <div class="nav-container">
+            <a href="index.html" class="logo">
+                <img src="logo.png" alt="Nexus Logo" class="logo-img">
+                <div>Nexus<span>Solutions</span></div>
+            </a>
+            <ul class="nav-links">
+                <li><a href="index.html">Inicio</a></li>
+                <li><a href="glosario.html" class="active">Glosario TIC</a></li>
+                <li><a href="desarrollo.html">Desarrollo TP</a></li>
+                <li><a href="infografia.html">Infografía</a></li>
+                <li>
+                    <button id="dark-mode-toggle" style="background:none; border:none; cursor:pointer; font-size:1.2rem; display:flex; align-items:center;">
+                        <span id="theme-icon">🌙</span>
+                    </button>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <header class="page-header">
+        <div class="container" style="padding: 0 20px;">
+            <h1>Base de Conocimiento Técnica</h1>
+            <p>Directorio estandarizado de terminología corporativa, arquitectura de sistemas y Tecnologías de la Información.</p>
+            
+            <div class="search-container reveal visible">
+                <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="11" cy="11" r="8"></circle>
+                    <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                </svg>
+                <input type="text" id="searchInput" placeholder="Buscar concepto o definición rápida...">
+            </div>
+        </div>
+    </header>
+
+    <main class="container">
+        
+        <div class="alpha-filter reveal">
+            <button class="filter-btn active" data-letter="all">Todos</button>
+            <button class="filter-btn" data-letter="B">B</button>
+            <button class="filter-btn" data-letter="C">C</button>
+            <button class="filter-btn" data-letter="D">D</button>
+            <button class="filter-btn" data-letter="E">E</button>
+            <button class="filter-btn" data-letter="F">F</button>
+            <button class="filter-btn" data-letter="I">I</button>
+            <button class="filter-btn" data-letter="N">N</button>
+            <button class="filter-btn" data-letter="R">R</button>
+            <button class="filter-btn" data-letter="S">S</button>
+            <button class="filter-btn" data-letter="T">T</button>
+        </div>
+
+        <div class="glossary-grid" id="glossaryGrid">
+            
+            <div class="term-card reveal" data-index="B">
+                <div class="term-header">
+                    <h3>Brecha Digital</h3>
+                    <span class="letter-badge">B</span>
+                </div>
+                <p>Hace referencia a la desigualdad en el acceso, uso o impacto de las Tecnologías de la Información y la Comunicación (TIC) entre diferentes grupos sociales, económicos o geográficos.</p>
+                <div class="external-source">Nota: Concepto no presente en el TP. Fuente consultada: Wikipedia.</div>
+            </div>
+
+            <div class="term-card reveal" data-index="C">
+                <div class="term-header">
+                    <h3>Caja Negra</h3>
+                    <span class="letter-badge">C</span>
+                </div>
+                <p>Es como ver un proceso con sus entradas y salidas pero no podemos ver o no nos interesa saber que es lo que pasó dentro de ese proceso sino que nos interesa más su salida <span class="cite"></span>.</p>
+            </div>
+
+            <div class="term-card reveal" data-index="D">
+                <div class="term-header">
+                    <h3>Dato</h3>
+                    <span class="letter-badge">D</span>
+                </div>
+                <p>Los datos son un conjunto de hechos discretos, aislados y objetivos, que por si solos no generan un valor <span class="cite">[cite: 4]</span>. Son la materia prima fundamental que el sistema requiere captar dentro del entorno para procesarla <span class="cite">[cite: 5]</span>.</p>
+            </div>
+
+            <div class="term-card reveal" data-index="E">
+                <div class="term-header">
+                    <h3>Entropía</h3>
+                    <span class="letter-badge">E</span>
+                </div>
+                <p>Es la tendencia que tiene un sistema al caos o al desorden <span class="cite"></span>.</p>
+            </div>
+
+            <div class="term-card reveal" data-index="F">
+                <div class="term-header">
+                    <h3>Feedback</h3>
+                    <span class="letter-badge">F</span>
+                </div>
+                <p>Información de retorno que recibimos del mundo como consecuencia de nuestras acciones, y que usamos para decidir qué hacer después <span class="cite"></span>.</p>
+            </div>
+
+            <div class="term-card reveal" data-index="I">
+                <div class="term-header">
+                    <h3>Información</h3>
+                    <span class="letter-badge">I</span>
+                </div>
+                <p>Es el resultado de tomar los datos, ordenarlos y procesarlos para que tengan sentido <span class="cite">[cite: 7]</span>.</p>
+            </div>
+
+            <div class="term-card reveal" data-index="I">
+                <div class="term-header">
+                    <h3>Informática</h3>
+                    <span class="letter-badge">I</span>
+                </div>
+                <p>Disciplina que se encarga del procesamiento automático de la información mediante el uso de computadoras <span class="cite">[cite: 15]</span>.</p>
+            </div>
+
+            <div class="term-card reveal" data-index="N">
+                <div class="term-header">
+                    <h3>Negentropía</h3>
+                    <span class="letter-badge">N</span>
+                </div>
+                <p>Mecanismo que utilizan los sistemas para contrarrestar el desorden de la entropía, importando energía, información u orden desde su entorno <span class="cite"></span>.</p>
+            </div>
+
+            <div class="term-card reveal" data-index="R">
+                <div class="term-header">
+                    <h3>Resultado</h3>
+                    <span class="letter-badge">R</span>
+                </div>
+                <p>Salida que da un sistema luego de haber procesado los datos <span class="cite">[cite: 10]</span>. Son el objetivo que se busca al trabajar con ellos <span class="cite">[cite: 12]</span>.</p>
+            </div>
+
+            <div class="term-card reveal" data-index="S">
+                <div class="term-header">
+                    <h3>Sinergia</h3>
+                    <span class="letter-badge">S</span>
+                </div>
+                <p>Nos dice que el comportamiento de un sistema no puede explicarse simplemente analizando las partes, sino teniendo en cuenta cómo se relacionan <span class="cite"></span>. "El todo es más que la suma de sus partes" <span class="cite"></span>.</p>
+            </div>
+
+            <div class="term-card reveal" data-index="S">
+                <div class="term-header">
+                    <h3>Sistema</h3>
+                    <span class="letter-badge">S</span>
+                </div>
+                <p>Es un conjunto de componentes o elementos que se relacionan entre sí y cooperan para alcanzar un objetivo en común <span class="cite"></span>.</p>
+            </div>
+
+            <div class="term-card reveal" data-index="S">
+                <div class="term-header">
+                    <h3>Subsistema</h3>
+                    <span class="letter-badge">S</span>
+                </div>
+                <p>Es un sistema que a la vez es parte de un sistema mayor <span class="cite"></span>.</p>
+            </div>
+
+            <div class="term-card reveal" data-index="T">
+                <div class="term-header">
+                    <h3>Telecomunicaciones</h3>
+                    <span class="letter-badge">T</span>
+                </div>
+                <p>Área que estudia la transmisión de información a distancia a través de medios electrónicos <span class="cite"></span>.</p>
+            </div>
+
+            <div class="term-card reveal" data-index="T">
+                <div class="term-header">
+                    <h3>Telemática</h3>
+                    <span class="letter-badge">T</span>
+                </div>
+                <p>Disciplina que surge de la integración entre la informática y las telecomunicaciones <span class="cite">[cite: 35]</span>. Permite que computadoras se comuniquen entre sí para intercambiar datos de forma eficiente <span class="cite">[cite: 37]</span>.</p>
+            </div>
+
+            <div class="term-card reveal" data-index="T">
+                <div class="term-header">
+                    <h3>TIC</h3>
+                    <span class="letter-badge">T</span>
+                </div>
+                <p>Tecnologías de la Información y la Comunicación: conjunto de herramientas y sistemas que permiten crear, procesar, almacenar y transmitir información mediante dispositivos electrónicos y redes <span class="cite"></span>.</p>
+            </div>
+
+            <div id="noResults" class="no-results">
+                No se encontraron términos que coincidan con tu búsqueda.
+            </div>
+
+        </div>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2026 Nexus Solutions. Directorio de Base de Conocimientos.</p>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            
+            // 1. Animación de revelado al scrollear
+            const reveals = document.querySelectorAll(".reveal");
+            const revealOnScroll = new IntersectionObserver(function(entries, observer) {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add("visible");
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.1, rootMargin: "0px 0px -20px 0px" });
+
+            reveals.forEach(reveal => revealOnScroll.observe(reveal));
+
+            // 2. Lógica de Búsqueda Dinámica
+            const searchInput = document.getElementById('searchInput');
+            const cards = document.querySelectorAll('.term-card');
+            const noResults = document.getElementById('noResults');
+            const filterBtns = document.querySelectorAll('.filter-btn');
+
+            function filterCards() {
+                const searchTerm = searchInput.value.toLowerCase();
+                const activeBtn = document.querySelector('.filter-btn.active');
+                const activeLetter = activeBtn ? activeBtn.getAttribute('data-letter') : 'all';
+                let visibleCount = 0;
+
+                cards.forEach(card => {
+                    const title = card.querySelector('h3').innerText.toLowerCase();
+                    const desc = card.querySelector('p').innerText.toLowerCase();
+                    const firstLetter = card.getAttribute('data-index');
+                    
+                    const matchesSearch = title.includes(searchTerm) || desc.includes(searchTerm);
+                    const matchesLetter = (activeLetter === 'all') || (firstLetter === activeLetter);
+
+                    if (matchesSearch && matchesLetter) {
+                        card.style.display = 'flex';
+                        // Forzar una pequeña animación de reaparición
+                        setTimeout(() => card.classList.add('visible'), 10);
+                        visibleCount++;
+                    } else {
+                        card.style.display = 'none';
+                        card.classList.remove('visible');
+                    }
+                });
+
+                // Mostrar mensaje de no resultados si corresponde
+                if(visibleCount === 0) {
+                    noResults.style.display = 'block';
+                } else {
+                    noResults.style.display = 'none';
+                }
+            }
+
+            // Evento para el buscador
+            searchInput.addEventListener('input', filterCards);
+
+            // 3. Lógica del Filtro Alfabético
+            filterBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    // Limpiar botones activos
+                    filterBtns.forEach(b => b.classList.remove('active'));
+                    // Activar el botón clickeado
+                    btn.classList.add('active');
+                    // Ejecutar el filtro principal (que evalúa tanto búsqueda como letra)
+                    filterCards();
+                });
+            });
+
+        });
+    </script>
+    <script>
+        const toggleBtn = document.getElementById('dark-mode-toggle');
+        const themeIcon = document.getElementById('theme-icon');
+        const body = document.body;
+        const logoImg = document.querySelector('.logo-img');
+
+        function applyTheme(isDark) {
+            if (isDark) {
+                body.classList.add('dark-mode');
+                themeIcon.innerText = '☀️';
+                if(logoImg) logoImg.style.filter = 'brightness(1.2) contrast(1.1)';
+            } else {
+                body.classList.remove('dark-mode');
+                themeIcon.innerText = '🌙';
+                if(logoImg) logoImg.style.filter = 'none';
+            }
+        }
+
+        // Al cargar la página, verificamos si ya había un tema guardado
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme === 'dark') {
+            applyTheme(true);
+        }
+
+        // Escuchamos el clic para cambiar el tema y guardarlo
+        toggleBtn.addEventListener('click', () => {
+            const isNowDark = !body.classList.contains('dark-mode');
+            applyTheme(isNowDark);
+            localStorage.setItem('theme', isNowDark ? 'dark' : 'light');
+        });
+    </script>
+</body>
+</html>
