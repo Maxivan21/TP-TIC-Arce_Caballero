@@ -184,16 +184,18 @@
             padding: 0 20px;
         }
 
-        .logo {
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: var(--primary-blue);
-            text-decoration: none;
+        .logo { 
+            display: flex; 
+            align-items: center; 
+            gap: 10px; /* Separación entre el ícono y el texto */
+            font-size: 1.5rem; 
+            font-weight: 800; 
+            color: var(--primary-blue); 
+            text-decoration: none; 
+            letter-spacing: -0.5px;
         }
-
-        .logo span {
-            color: var(--secondary-blue);
-        }
+        .logo span { color: var(--secondary-blue); }
+        .logo-img { height: 40px; width: auto; object-fit: contain; }
 
         .nav-links {
             list-style: none;
@@ -619,6 +621,7 @@
                 <li><a href="glosario.html">Glosario TIC</a></li>
                 <li><a href="desarrollo.html">Desarrollo TP</a></li>
                 <li><a href="infografia.html" class="active">Infografía</a></li>
+                <li><a href="datos-al-azar.html">Datos al Azar</a></li>
                 <li>
                     <button id="dark-mode-toggle"
                         style="background:none; border:none; cursor:pointer; font-size:1.2rem; display:flex; align-items:center;">

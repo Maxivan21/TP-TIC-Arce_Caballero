@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nexus Solutions | De los datos al azar</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;900&display=swap" rel="stylesheet">
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+
+    <style>
+        /* --- Variables Corporativas (Claro/Oscuro) --- */
+        :root {
+            --primary-blue: #0A2540; --secondary-blue: #0052CC; --accent-cyan: #00B8D9;      
+            --bg-light: #F4F5F7; --bg-body: #FAFBFC; --text-main: #172B4D;        
+            --text-muted: #5E6C84; --border-color: #DFE1E6; --white: #FFFFFF;
+            --transition: all 0.3s ease;
+        }
+
+        body.dark-mode {
+            --bg-body: #050505; --bg-light: #121212; --white: #1A1A1A; --border-color: #333333;
+            --primary-blue: #E6EFFF; --text-main: #F4F5F7; --text-muted: #B3D4FF; --secondary-blue: #4791FF;
+            background: linear-gradient(-45deg, #050505, #0A192F, #121212, #050505);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        
+        body { 
+            font-family: 'Inter', sans-serif; color: var(--text-main); 
+            background: linear-gradient(-45deg, #ffffff, #F4F5F7, #E3E5E8, #ffffff);
+            background-size: 400% 400%; animation: moveLightGradient 15s ease infinite;
+            line-height: 1.6; overflow-x: hidden; min-height: 100vh;
+        }
+
+        @keyframes moveLightGradient { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+
+        /* --- Navbar --- */
+        nav { position: fixed; top: 0; width: 100%; background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); box-shadow: 0 2px 15px rgba(0,0,0,0.05); z-index: 1000; padding: 15px 0; transition: var(--transition); }
+        body.dark-mode nav { background: rgba(10, 25, 64, 0.95); border-bottom: 1px solid #333; }
+        .nav-container { display: flex; justify-content: space-between; align-items: center; max-width: 1400px; margin: 0 auto; padding: 0 20px; }
+        .logo { 
+            display: flex; 
+            align-items: center; 
+            gap: 10px; /* Separación entre el ícono y el texto */
+            font-size: 1.5rem; 
+            font-weight: 800; 
+            color: var(--primary-blue); 
+            text-decoration: none; 
+            letter-spacing: -0.5px;
+        }
+        .logo span { color: var(--secondary-blue); }
+        .logo-img { height: 40px; width: auto; object-fit: contain; }
+        .nav-links { list-style: none; display: flex; gap: 30px; align-items: center; }
+        .nav-links a { text-decoration: none; color: var(--text-muted); font-weight: 600; font-size: 0.9rem; text-transform: uppercase; transition: var(--transition); }
+        .nav-links a:hover, .nav-links a.active { color: var(--secondary-blue); }
+        body.dark-mode .nav-links a { color: #B3D4FF; }
+        body.dark-mode .nav-links a.active { color: var(--accent-cyan); }
+
+        /* --- Header --- */
+        .page-header { background: linear-gradient(135deg, var(--primary-blue) 0%, #153B61 100%); color: #fff; padding: 140px 0 60px; text-align: center; }
+        .page-header h1 { font-size: 3rem; margin-bottom: 15px; font-weight: 800; letter-spacing: -1px;}
+        .page-header p { color: #B3D4FF; font-size: 1.1rem; max-width: 700px; margin: 0 auto; }
+
+        /* --- Layout Laboratorio --- */
+        .container { max-width: 1300px; margin: 0 auto; padding: 60px 20px; }
+        
+        .lab-module { background: var(--white); border: 1px solid var(--border-color); border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.03); margin-bottom: 40px; overflow: hidden; transition: var(--transition); }
+        body.dark-mode .lab-module { background: #1A1A1A; border-color: #333; }
+        
+        /* Controles 3D */
+        .controls-toolbar { display: flex; justify-content: space-between; align-items: center; padding: 20px 30px; border-bottom: 1px solid var(--border-color); background: var(--bg-light); flex-wrap: wrap; gap: 15px; }
+        .controls-toolbar h3 { color: var(--primary-blue); font-size: 1.3rem; margin: 0; display: flex; align-items: center; gap: 10px; }
+        
+        .btn-group { display: flex; gap: 10px; flex-wrap: wrap; }
+        .btn-interactive { background: var(--white); border: 1px solid var(--border-color); color: var(--text-muted); padding: 10px 15px; font-family: 'Inter', sans-serif; font-weight: 600; font-size: 0.85rem; cursor: pointer; transition: all 0.3s ease; text-transform: uppercase; border-radius: 6px; }
+        .btn-interactive:hover, .btn-interactive.active { background: var(--secondary-blue); color: #fff; border-color: var(--secondary-blue); box-shadow: 0 4px 15px rgba(0, 82, 204, 0.3); }
+        select.btn-interactive { appearance: auto; }
+        body.dark-mode .btn-interactive { background: #121212; border-color: #444; color: var(--text-main); }
+        body.dark-mode .btn-interactive.active { background: var(--accent-cyan); color: #000; border-color: var(--accent-cyan); box-shadow: 0 4px 15px rgba(0, 184, 217, 0.3); }
+
+        /* Contenedor 3D */
+        #three-container { width: 100%; height: 500px; background: #07101D; position: relative; cursor: grab; }
+        #three-container:active { cursor: grabbing; }
+        .three-overlay { position: absolute; bottom: 20px; left: 20px; color: #fff; font-family: monospace; font-size: 0.85rem; background: rgba(0,0,0,0.6); padding: 8px 12px; border-radius: 6px; border-left: 3px solid var(--accent-cyan); pointer-events: none; }
+        .three-instructions { position: absolute; top: 20px; right: 20px; color: #B3D4FF; font-size: 0.85rem; background: rgba(0,0,0,0.6); padding: 12px 18px; border-radius: 6px; text-align: right; border: 1px solid rgba(255,255,255,0.1); pointer-events: none; }
+
+        /* Grid Inferior */
+        .lab-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 30px; }
+        .tool-panel { padding: 30px; }
+        .tool-panel h3 { color: var(--primary-blue); margin-bottom: 10px; font-size: 1.2rem; }
+        .tool-panel p.desc { color: var(--text-muted); font-size: 0.95rem; margin-bottom: 25px; }
+
+        .dashboard-ui { background: var(--bg-light); padding: 25px; border-radius: 8px; border: 1px solid var(--border-color); }
+        .stat-row { display: flex; justify-content: space-between; font-weight: 600; margin-bottom: 15px; font-size: 0.95rem; }
+        
+        input[type="range"] { width: 100%; margin: 15px 0 25px; accent-color: var(--secondary-blue); cursor: pointer; }
+        input[type="text"] { width: 100%; padding: 12px 15px; border: 1px solid var(--border-color); border-radius: 6px; font-family: 'Inter', sans-serif; margin-bottom: 15px; background: var(--white); color: var(--text-main); font-size: 1rem; }
+        body.dark-mode input[type="text"] { background: #1A1A1A; border-color: #444; }
+
+        .svg-container { width: 100%; height: 200px; background: var(--white); border: 1px solid var(--border-color); border-radius: 6px; }
+        
+        .output-screen { background: #0A192F; color: #00B8D9; padding: 15px; border-radius: 6px; font-family: 'Courier New', monospace; font-size: 1rem; letter-spacing: 1px; word-wrap: break-word; min-height: 80px; border-left: 4px solid var(--accent-cyan); }
+
+        footer { background-color: var(--primary-blue); color: #8C9BAB; padding: 40px 0; border-top: 5px solid var(--secondary-blue); text-align: center; }
+
+        /* --- Preloader --- */
+        #preloader { position: fixed; top: 0; left: 0; width: 100%; height: 100vh; background-color: var(--bg-body); z-index: 9999; display: flex; justify-content: center; align-items: center; transition: opacity 0.6s ease, visibility 0.6s ease; }
+        .loader-content { display: flex; flex-direction: column; align-items: center; gap: 25px; }
+        .loader-logo { height: 50px; width: auto; animation: pulseLogo 1.5s infinite alternate ease-in-out; }
+        .loader-bar-container { width: 200px; height: 3px; background: var(--border-color); border-radius: 4px; overflow: hidden; position: relative; }
+        .loader-bar { width: 0%; height: 100%; background: var(--secondary-blue); animation: loadingProgress 1.2s cubic-bezier(0.8, 0, 0.2, 1) forwards; }
+        .loader-text { font-family: monospace; color: var(--text-muted); font-size: 0.85rem; letter-spacing: 3px; text-transform: uppercase; animation: blinkText 1.5s infinite; }
+        @keyframes pulseLogo { from { transform: scale(0.95); opacity: 0.8; } to { transform: scale(1.05); opacity: 1; filter: drop-shadow(0 0 10px var(--accent-cyan)); } }
+        @keyframes loadingProgress { 0% { width: 0%; } 40% { width: 40%; } 60% { width: 80%; } 100% { width: 100%; } }
+        @keyframes blinkText { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+        body.loaded #preloader { opacity: 0; visibility: hidden; }
+        
+        /* Reveal Anim */
+        .reveal { opacity: 0; transform: translateY(30px); transition: all 0.6s cubic-bezier(0.5, 0, 0, 1); }
+        .reveal.visible { opacity: 1; transform: translateY(0); }
+    </style>
+</head>
+<body>
+
+    <div id="preloader">
+        <div class="loader-content">
+            <img src="logo.png" alt="Cargando Nexus" class="loader-logo">
+            <div class="loader-bar-container"><div class="loader-bar"></div></div>
+            <p class="loader-text">Inicializando Entornos...</p>
+        </div>
+    </div>
+
+    <nav>
+        <div class="nav-container">
+            <a href="index.html" class="logo">
+                <img src="logo.png" alt="Nexus Logo" class="logo-img">
+                <div>Nexus<span>Solutions</span></div>
+            </a>
+            <ul class="nav-links">
+                <li><a href="index.html">Inicio</a></li>
+                <li><a href="glosario.html">Glosario TIC</a></li>
+                <li><a href="desarrollo.html">Desarrollo TP</a></li>
+                <li><a href="infografia.html">Infografía</a></li>
+                <li><a href="datos-al-azar.html" class="active">Datos al Azar</a></li>
+                <li>
+                    <button id="dark-mode-toggle" style="background:none; border:none; cursor:pointer; font-size:1.2rem; display:flex; align-items:center;">
+                        <span id="theme-icon">🌙</span>
+                    </button>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <header class="page-header">
+        <div class="container" style="padding:0;">
+            <h1>Laboratorio Analítico</h1>
+            <p>De los datos al azar: Visualización interactiva de principios informativos, estocástica y simulación procedimental.</p>
+        </div>
+    </header>
+
+    <main class="container">
+        
+        <div class="lab-module reveal">
+            <div class="controls-toolbar">
+                <h3>Motor de Entropía 3D</h3>
+                <div class="btn-group">
+                    <select id="shape-selector" class="btn-interactive" onchange="updateShape()">
+                        <optgroup label="Modelos Matemáticos">
+                            <option value="cube">Matriz Cúbica</option>
+                            <option value="sphere">Esfera Fibonacci</option>
+                            <option value="helix">Hélice Causal</option>
+                        </optgroup>
+                        <optgroup label="Modelos Procedimentales">
+                            <option value="building">Estructura Corporativa</option>
+                            <option value="mountain">Relieve Geográfico</option>
+                            <option value="tree">Árbol Binario</option>
+                        </optgroup>
+                        <optgroup label="Modelos Complejos">
+                            <option value="dog">Forma Biológica (A)</option>
+                            <option value="cat">Forma Biológica (B)</option>
+                            <option value="dragon">Estructura Mitológica</option>
+                        </optgroup>
+                    </select>
+                    <button class="btn-interactive" id="btn-sto" onclick="set3DMode('stochastic')">Caos (Estocástico)</button>
+                    <button class="btn-interactive active" id="btn-det" onclick="set3DMode('deterministic')">Orden (Determinístico)</button>
+                </div>
+            </div>
+            
+            <div id="three-container">
+                <div class="three-instructions">
+                    🖱️ Clic y arrastrar: <b>Rotar</b><br>
+                    📜 Rueda del mouse: <b>Zoom</b><br>
+                    <span style="opacity: 0.7; font-size: 0.75rem; margin-top: 5px; display: block;">Autoplay automático al soltar</span>
+                </div>
+                <div class="three-overlay" id="three-status">ESTADO: Alineación matricial...</div>
+            </div>
+        </div>
+
+        <div class="lab-grid">
+            
+            <div class="lab-module tool-panel reveal">
+                <h3>Información Propia (Shannon)</h3>
+                <p class="desc">Curva logarítmica para determinar la cantidad de bits necesarios para codificar un evento según su nivel de incertidumbre.</p>
+                <div class="dashboard-ui">
+                    <div class="stat-row">
+                        <span>Probabilidad: <strong id="val-p" style="color: var(--secondary-blue);">0.50</strong></span>
+                        <span>Información: <strong id="val-i" style="color: var(--accent-cyan);">1.00 Bits</strong></span>
+                    </div>
+                    <input type="range" id="slider-prob" min="0.01" max="1" step="0.01" value="0.5">
+                    <div class="svg-container" style="display:flex; justify-content:center; align-items:center; overflow:hidden;">
+                        <svg id="chart-svg" style="width:100%; height:100%;"></svg>
+                    </div>
+                </div>
+            </div>
+
+            <div class="lab-module tool-panel reveal">
+                <h3>Integridad de Canal</h3>
+                <p class="desc">Simulador de algoritmos estocásticos modelando la degradación (entropía) y la interferencia en canales de transmisión no securizados.</p>
+                <div class="dashboard-ui">
+                    <input type="text" id="input-msg" placeholder="Ingrese paquete de datos..." value="SISTEMAS EXPERTOS NEXUS">
+                    
+                    <div class="stat-row" style="margin-top: 20px;">
+                        <span>Ruido Estocástico del Medio:</span>
+                        <span id="noise-val" style="color: #F59E0B;">15%</span>
+                    </div>
+                    <input type="range" id="noise-slider" min="0" max="100" value="15">
+                    
+                    <div style="margin-top: 25px;">
+                        <span style="font-size: 0.85rem; font-weight: bold; color: var(--text-muted); text-transform: uppercase;">Salida en Recepción:</span>
+                        <div class="output-screen" id="output-msg">SISTEMAS EXPERTOS NEXUS</div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </main>
+
+    <footer>
+        <div class="container" style="padding: 0;">
+            <p>&copy; 2026 Nexus Solutions. Laboratorio de Ingeniería y Análisis Estocástico.</p>
+        </div>
+    </footer>
+
+    <script>
+        // 1. Preloader y Reveal
+        window.addEventListener('load', () => {
+            setTimeout(() => document.body.classList.add('loaded'), 800);
+        });
+
+        const reveals = document.querySelectorAll(".reveal");
+        const revealObserver = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add("visible");
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.1 });
+        reveals.forEach(r => revealObserver.observe(r));
+
+        // 2. Modo Oscuro Sincronizado
+        const toggleBtn = document.getElementById('dark-mode-toggle');
+        const themeIcon = document.getElementById('theme-icon');
+        const body = document.body;
+        const logoImg = document.querySelector('.logo-img');
+
+        function applyTheme(isDark) {
+            if (isDark) {
+                body.classList.add('dark-mode'); themeIcon.innerText = '☀️';
+                if(logoImg) logoImg.style.filter = 'brightness(1.2) contrast(1.1)';
+            } else {
+                body.classList.remove('dark-mode'); themeIcon.innerText = '🌙';
+                if(logoImg) logoImg.style.filter = 'none';
+            }
+            // Redibujar SVG al cambiar el tema para ajustar colores
+            let p = parseFloat(document.getElementById('slider-prob').value);
+            setTimeout(() => drawSVG(p), 50); 
+        }
+
+        if (localStorage.getItem('theme') === 'dark') applyTheme(true);
+
+        toggleBtn.addEventListener('click', () => {
+            const isNowDark = !body.classList.contains('dark-mode');
+            applyTheme(isNowDark);
+            localStorage.setItem('theme', isNowDark ? 'dark' : 'light');
+        });
+
+        // 3. MOTOR THREE.JS (Colores adaptados a Nexus)
+        const container = document.getElementById('three-container');
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(60, container.clientWidth / container.clientHeight, 0.1, 1000);
+        camera.position.set(0, 5, 25);
+        const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+        renderer.setSize(container.clientWidth, container.clientHeight);
+        renderer.setPixelRatio(window.devicePixelRatio);
+        container.appendChild(renderer.domElement);
+
+        const controls = new THREE.OrbitControls(camera, renderer.domElement);
+        controls.enableDamping = true; controls.dampingFactor = 0.05;
+        controls.autoRotate = true; controls.autoRotateSpeed = 1.0;
+        controls.maxDistance = 50; controls.minDistance = 5;  
+
+        let interactionTimeout;
+        controls.addEventListener('start', () => { controls.autoRotate = false; clearTimeout(interactionTimeout); });
+        controls.addEventListener('end', () => { interactionTimeout = setTimeout(() => { controls.autoRotate = true; }, 3000); });
+
+        const particleCount = 1200;
+        const geometry = new THREE.BufferGeometry();
+        const positions = new Float32Array(particleCount * 3);
+        const targetPositions = new Float32Array(particleCount * 3);
+        const colors = new Float32Array(particleCount * 3);
+
+        function rand(min, max) { return Math.random() * (max - min) + min; }
+        function randomInBox(xM, xX, yM, yX, zM, zX) { return { x: rand(xM,xX), y: rand(yM,yX), z: rand(zM,zX) }; }
+
+        function generateShape(shapeType) {
+            let idx = 0;
+            const setPos = (x, y, z) => {
+                if(idx < particleCount) {
+                    targetPositions[idx*3] = x; targetPositions[idx*3+1] = y; targetPositions[idx*3+2] = z;
+                    idx++;
+                }
+            };
+
+            if (shapeType === 'cube') {
+                const size = Math.ceil(Math.pow(particleCount, 1/3)), sp = 1.5, off = (size * sp) / 2;
+                for(let x=0; x<size; x++) for(let y=0; y<size; y++) for(let z=0; z<size; z++) setPos(x*sp-off, y*sp-off, z*sp-off);
+            } 
+            else if (shapeType === 'sphere') {
+                const phi = Math.PI * (3 - Math.sqrt(5)), r = 9;
+                for(let i=0; i<particleCount; i++) {
+                    const y = 1 - (i / (particleCount - 1)) * 2, radius = Math.sqrt(1 - y * y) * r, theta = phi * i;
+                    setPos(Math.cos(theta) * radius, y * r, Math.sin(theta) * radius);
+                }
+            }
+            else if (shapeType === 'helix') {
+                for(let i=0; i<particleCount; i++) {
+                    const t = i / particleCount, angle = t * Math.PI * 25;
+                    setPos(Math.cos(angle) * 6, (t * 25) - 12.5, Math.sin(angle) * 6);
+                }
+            }
+            else if (shapeType === 'building') {
+                for(let i=0; i<particleCount; i++) {
+                    if(i < 1000) { let p = randomInBox(-3, 3, -10, 8, -3, 3); setPos(p.x, p.y, p.z); }
+                    else { let p = randomInBox(-0.5, 0.5, 8, 14, -0.5, 0.5); setPos(p.x, p.y, p.z); }
+                }
+            }
+            else if (shapeType === 'mountain') {
+                for(let i=0; i<particleCount; i++) {
+                    const y = rand(-5, 8); const maxRadius = 10 * (1 - (y + 5)/13);
+                    const r = rand(0, maxRadius), theta = rand(0, Math.PI*2);
+                    setPos(r * Math.cos(theta), y, r * Math.sin(theta));
+                }
+            }
+            else if (shapeType === 'tree') {
+                for(let i=0; i<particleCount; i++) {
+                    if(i < 200) { let p = randomInBox(-1, 1, -8, 2, -1, 1); setPos(p.x, p.y, p.z); }
+                    else { const y = rand(0, 10), r = 6 * Math.sqrt(1 - Math.pow((y-5)/5, 2)), theta = rand(0, Math.PI*2), d = rand(0, r); setPos(d * Math.cos(theta), y, d * Math.sin(theta)); }
+                }
+            }
+            else if (shapeType === 'dog') {
+                for(let i=0; i<particleCount; i++) {
+                    if(i < 500) { let p = randomInBox(-4, 4, 0, 3, -2, 2); setPos(p.x, p.y, p.z); } 
+                    else if(i < 700) { let p = randomInBox(3, 6, 3, 6, -1.5, 1.5); setPos(p.x, p.y, p.z); } 
+                    else if(i < 800) { let p = randomInBox(-3.5, -2, -4, 0, -1.5, -0.5); setPos(p.x, p.y, p.z); } 
+                    else if(i < 900) { let p = randomInBox(-3.5, -2, -4, 0, 0.5, 1.5); setPos(p.x, p.y, p.z); } 
+                    else if(i < 1000) { let p = randomInBox(2, 3.5, -4, 0, -1.5, -0.5); setPos(p.x, p.y, p.z); } 
+                    else if(i < 1100) { let p = randomInBox(2, 3.5, -4, 0, 0.5, 1.5); setPos(p.x, p.y, p.z); } 
+                    else { let p = randomInBox(-6, -4, 2, 4, -0.5, 0.5); setPos(p.x, p.y, p.z); } 
+                }
+            }
+            else if (shapeType === 'cat') {
+                for(let i=0; i<particleCount; i++) {
+                    if(i < 400) { let p = randomInBox(-3, 3, -1, 2, -1.5, 1.5); setPos(p.x, p.y, p.z); } 
+                    else if(i < 600) { let p = randomInBox(2.5, 4.5, 2, 4, -1.5, 1.5); setPos(p.x, p.y, p.z); } 
+                    else if(i < 700) { let p = randomInBox(-2.5, -1.5, -4, -1, -1.2, -0.2); setPos(p.x, p.y, p.z); } 
+                    else if(i < 800) { let p = randomInBox(-2.5, -1.5, -4, -1, 0.2, 1.2); setPos(p.x, p.y, p.z); } 
+                    else if(i < 900) { let p = randomInBox(1.5, 2.5, -4, -1, -1.2, -0.2); setPos(p.x, p.y, p.z); } 
+                    else if(i < 1000) { let p = randomInBox(1.5, 2.5, -4, -1, 0.2, 1.2); setPos(p.x, p.y, p.z); } 
+                    else if(i < 1100) { let p = randomInBox(-7, -3, 1, 5, -0.3, 0.3); setPos(p.x, p.y, p.z); } 
+                    else { let p = randomInBox(3, 4, 4, 5.5, -1.5, 1.5); setPos(p.x, p.y, p.z); } 
+                }
+            }
+            else if (shapeType === 'dragon') {
+                for(let i=0; i<particleCount; i++) {
+                    if(i < 500) { const x = rand(-8, 6), y = Math.sin(x) * 2, z = rand(-1, 1); setPos(x, y, z); } 
+                    else if(i < 800) { const x = rand(-2, 3), z = rand(-6, -1), y = 2 + Math.abs(z)*0.5 + rand(-0.5,0.5); setPos(x, y, z); }
+                    else if(i < 1100) { const x = rand(-2, 3), z = rand(1, 6), y = 2 + Math.abs(z)*0.5 + rand(-0.5,0.5); setPos(x, y, z); }
+                    else { let p = randomInBox(6, 9, 1, 3, -1.5, 1.5); setPos(p.x, p.y, p.z); }
+                }
+            }
+            while(idx < particleCount) { targetPositions[idx*3] = 0; targetPositions[idx*3+1] = 0; targetPositions[idx*3+2] = 0; idx++; }
+        }
+
+        // Colores Nexus: Cian (0,184,217) y Azul (0,82,204)
+        for(let i=0; i<particleCount; i++) {
+            positions[i*3] = rand(-15, 15); positions[i*3+1] = rand(-15, 15); positions[i*3+2] = rand(-15, 15);
+            const mix = Math.random();
+            if(mix > 0.5) { colors[i*3] = 0; colors[i*3+1] = 184/255; colors[i*3+2] = 217/255; } // Cian
+            else { colors[i*3] = 0; colors[i*3+1] = 82/255; colors[i*3+2] = 204/255; } // Azul
+        }
+
+        geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+        geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+        const material = new THREE.PointsMaterial({ size: 0.25, vertexColors: true, transparent: true, opacity: 0.9 });
+        const particleSystem = new THREE.Points(geometry, material);
+        scene.add(particleSystem);
+
+        let current3DMode = 'deterministic';
+        generateShape('cube');
+
+        window.updateShape = function() {
+            if(current3DMode === 'deterministic') {
+                const shape = document.getElementById('shape-selector').value;
+                generateShape(shape);
+                document.getElementById('three-status').innerText = `ESTADO: Generando modelo procedimental...`;
+            }
+        };
+
+        window.set3DMode = function(mode) {
+            current3DMode = mode;
+            document.getElementById('btn-sto').classList.remove('active');
+            document.getElementById('btn-det').classList.remove('active');
+            document.getElementById('btn-' + (mode === 'stochastic' ? 'sto' : 'det')).classList.add('active');
+            
+            if(mode === 'stochastic') {
+                document.getElementById('three-status').innerText = "ESTADO: Filtro Estocástico (Entropía Máxima)...";
+                document.getElementById('three-status').style.borderLeftColor = "#ff0080";
+            } else {
+                document.getElementById('three-status').style.borderLeftColor = "var(--accent-cyan)";
+                updateShape();
+            }
+        };
+
+        function animate3D() {
+            requestAnimationFrame(animate3D);
+            controls.update();
+            const positionsArray = particleSystem.geometry.attributes.position.array;
+
+            for(let i=0; i<particleCount; i++) {
+                let px = i*3, py = i*3+1, pz = i*3+2;
+                if(current3DMode === 'stochastic') {
+                    targetPositions[px] += (Math.random() - 0.5) * 0.6;
+                    targetPositions[py] += (Math.random() - 0.5) * 0.6;
+                    targetPositions[pz] += (Math.random() - 0.5) * 0.6;
+                    const dist = Math.sqrt(targetPositions[px]**2 + targetPositions[py]**2 + targetPositions[pz]**2);
+                    if(dist > 18) { targetPositions[px] *= 0.95; targetPositions[py] *= 0.95; targetPositions[pz] *= 0.95; }
+                }
+                positionsArray[px] += (targetPositions[px] - positionsArray[px]) * 0.05;
+                positionsArray[py] += (targetPositions[py] - positionsArray[py]) * 0.05;
+                positionsArray[pz] += (targetPositions[pz] - positionsArray[pz]) * 0.05;
+            }
+            particleSystem.geometry.attributes.position.needsUpdate = true;
+            renderer.render(scene, camera);
+        }
+        animate3D();
+
+        window.addEventListener('resize', () => {
+            const width = container.clientWidth; const height = container.clientHeight;
+            renderer.setSize(width, height); camera.aspect = width / height; camera.updateProjectionMatrix();
+        });
+
+        // 4. CALCULADORA SHANNON (SVG adaptado)
+        const svg = document.getElementById('chart-svg');
+        function drawSVG(currentP) {
+            // Colores basados en el tema
+            const isDark = document.body.classList.contains('dark-mode');
+            const strokeColor = '#00B8D9'; // Cian
+            const circleColor = isDark ? '#E6EFFF' : '#0A2540'; // Azul primario o blanco
+            const axisColor = isDark ? '#444' : '#DFE1E6';
+
+            const w = svg.clientWidth || 300, h = svg.clientHeight || 200; 
+            let pathD = `M 0 ${h}`;
+            for(let x=1; x<=w; x++) { let p = x / w; let y = h - (-Math.log2(p) / 7) * h; pathD += ` L ${x} ${y}`; }
+            const cX = currentP * w, cY = h - (-Math.log2(currentP) / 7) * h;
+            
+            svg.innerHTML = `
+                <line x1="0" y1="${h}" x2="${w}" y2="${h}" stroke="${axisColor}" stroke-width="2"/>
+                <line x1="0" y1="0" x2="0" y2="${h}" stroke="${axisColor}" stroke-width="2"/>
+                <path d="${pathD}" fill="none" stroke="${strokeColor}" stroke-width="3" stroke-linecap="round"/>
+                <line x1="${cX}" y1="${cY}" x2="${cX}" y2="${h}" stroke="${circleColor}" stroke-dasharray="5,5"/>
+                <circle cx="${cX}" cy="${cY}" r="6" fill="${circleColor}" />
+            `;
+        }
+        document.getElementById('slider-prob').addEventListener('input', (e) => {
+            let p = parseFloat(e.target.value); 
+            document.getElementById('val-p').innerText = p.toFixed(2); 
+            document.getElementById('val-i').innerText = (-Math.log2(p)).toFixed(2) + ' Bits'; 
+            drawSVG(p);
+        });
+        
+        // Timeout para asegurar que el contenedor se renderizó
+        setTimeout(() => { drawSVG(0.5); window.addEventListener('resize', () => drawSVG(parseFloat(document.getElementById('slider-prob').value))); }, 500);
+
+        // 5. SIMULADOR DE CANAL
+        const inputMsg = document.getElementById('input-msg'), outputMsg = document.getElementById('output-msg'), noiseSlider = document.getElementById('noise-slider'), noiseVal = document.getElementById('noise-val');
+        function simulateTransmission() {
+            let text = inputMsg.value, noiseLevel = parseInt(noiseSlider.value) / 100, corruptedText = '', charset = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()";
+            for(let i=0; i<text.length; i++) {
+                if(text[i] === ' ') { corruptedText += ' '; continue; }
+                if(Math.random() < noiseLevel) corruptedText += charset.charAt(Math.floor(Math.random() * charset.length)); else corruptedText += text[i];
+            }
+            outputMsg.innerText = corruptedText;
+            if(noiseLevel === 0) outputMsg.style.color = '#00ff87'; // Verde
+            else if (noiseLevel < 0.3) outputMsg.style.color = '#F59E0B'; // Naranja
+            else outputMsg.style.color = '#ff0080'; // Rosa/Rojo
+        }
+        inputMsg.addEventListener('input', simulateTransmission); 
+        noiseSlider.addEventListener('input', (e) => { noiseVal.innerText = e.target.value + '%'; simulateTransmission(); });
+        simulateTransmission(); // Inicializar con el valor por defecto
+    </script>
+</body>
+</html>
